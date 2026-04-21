@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trading Radar</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #0d0f14;
+      color: #e0e0e0;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #13161e;
+      border-bottom: 1px solid #1e2330;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 2px;
+    }
+
+    .logo span { color: #4ade80; }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: #666;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4ade80;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .filter-bar {
+      padding: 16px 24px;
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid #1e2330;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: #1e2330;
+      border: 1px solid #2a3040;
+      color: #888;
+      padding: 6px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+
+    .filter-btn:hover { border-color: #4ade80; color: #fff; }
+    .filter-btn.active { background: #1a2e1a; border-color: #4ade80; color: #4ade80; }
+
+    .signals-container {
+      padding: 24px;
+      max-width: 900px;
+    }
+
+    .signal-card {
+      background: #13161e;
+      border: 1px solid #1e2330;
+      border-left: 3px solid transparent;
+      border-radius: 6px;
+      padding: 14px 18px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: all 0.15s;
+    }
+
+    .signal-card:hover {
+      border-color: #2a3040;
+      background: #161920;
+    }
+
+    .signal-card.long { border-left-color: #4ade80; }
+    .signal-card.short { border-left-color: #f87171; }
+
+    .signal-direction {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      padding: 3px 8px;
+      border-radius: 3px;
+      min-width: 52px;
+      text-align: center;
+    }
+
+    .long .signal-direction { background: #1a2e1a; color: #4ade80; }
+    .short .signal-direction { background: #2e1a1a; color: #f87171; }
+
+    .signal-coin {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      min-width: 50px;
+    }
+
+    .signal-time {
+      font-size: 11px;
+      color: #555;
+      min-width: 130px;
+    }
+
+    .signal-summary {
+      font-size: 12px;
+      color: #888;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .signal-price {
+      font-size: 12px;
+      color: #aaa;
+      min-width: 80px;
+      text-align: right;
+    }
+
+    .arrow {
+      color: #333;
+      font-size: 12px;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .modal {
+      background: #13161e;
+      border: 1px solid #2a3040;
+      border-radius: 8px;
+      padding: 28px;
+      max-width: 560px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .modal-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .modal-coin { font-size: 22px; font-weight: 700; color: #fff; }
+    .modal-time { font-size: 12px; color: #555; margin-top: 2px; }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: #555;
+      cursor: pointer;
+      font-size: 20px;
+      padding: 4px 8px;
+    }
+
+    .close-btn:hover { color: #fff; }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .detail-item {
+      background: #0d0f14;
+      border: 1px solid #1e2330;
+      border-radius: 4px;
+      padding: 12px;
+    }
+
+    .detail-label {
+      font-size: 10px;
+      color: #555;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .detail-value {
+      font-size: 14px;
+      color: #e0e0e0;
+    }
+
+    .detail-value.bullish { color: #4ade80; }
+    .detail-value.bearish { color: #f87171; }
+    .detail-value.neutral { color: #fbbf24; }
+
+    .section-title {
+      font-size: 11px;
+      color: #555;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin: 16px 0 8px;
+    }
+
+    .analysis-block {
+      background: #0d0f14;
+      border: 1px solid #1e2330;
+      border-radius: 4px;
+      padding: 14px;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    .analysis-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .analysis-key {
+      color: #555;
+      min-width: 110px;
+      font-size: 11px;
+      text-transform: uppercase;
+      padding-top: 2px;
+    }
+
+    .analysis-val { color: #ccc; flex: 1; }
+
+    .strength-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .strength-stark { background: #1a2e1a; color: #4ade80; }
+    .strength-mittel { background: #2a2a1a; color: #fbbf24; }
+    .strength-schwach { background: #2e1a1a; color: #f87171; }
+
+    .empty {
+      text-align: center;
+      color: #333;
+      padding: 60px 24px;
+      font-size: 14px;
+    }
+
+    .loading {
+      text-align: center;
+      color: #333;
+      padding: 40px;
+    }
+
+    .refresh-btn {
+      background: #1e2330;
+      border: 1px solid #2a3040;
+      color: #888;
+      padding: 6px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      font-family: inherit;
+    }
+
+    .refresh-btn:hover { color: #fff; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">TRADING<span>RADAR</span></div>
+  <div style="display:flex;gap:12px;align-items:center">
+    <button class="refresh-btn" onclick="loadSignals()">↻ Refresh</button>
+    <div class="status">
+      <div class="dot"></div>
+      <span id="last-update">–</span>
+    </div>
+  </div>
+</header>
+
+<div class="filter-bar">
+  <button class="filter-btn active" onclick="setFilter('ALL')">ALL</button>
+  <button class="filter-btn" onclick="setFilter('BTC')">BTC</button>
+  <button class="filter-btn" onclick="setFilter('ETH')">ETH</button>
+  <button class="filter-btn" onclick="setFilter('SOL')">SOL</button>
+  <button class="filter-btn" onclick="setFilter('LINK')">LINK</button>
+  <button class="filter-btn" onclick="setFilter('AVAX')">AVAX</button>
+  <button class="filter-btn" onclick="setFilter('LONG')" style="margin-left:12px">LONG</button>
+  <button class="filter-btn" onclick="setFilter('SHORT')">SHORT</button>
+</div>
+
+<div class="signals-container">
+  <div id="signals-list"><div class="loading">Lade Signals...</div></div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal" id="modal-content">
+    <div class="modal-header">
+      <div class="modal-title">
+        <div>
+          <div class="modal-coin" id="modal-coin">–</div>
+          <div class="modal-time" id="modal-time">–</div>
+        </div>
+        <span id="modal-direction-badge" class="signal-direction" style="font-size:13px;padding:4px 12px">–</span>
+      </div>
+      <button class="close-btn" onclick="document.getElementById('modal').classList.remove('active')">✕</button>
+    </div>
+
+    <div class="detail-grid">
+      <div class="detail-item">
+        <div class="detail-label">Preis</div>
+        <div class="detail-value" id="d-price">–</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">RSI</div>
+        <div class="detail-value" id="d-rsi">–</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">EMA 50</div>
+        <div class="detail-value" id="d-ema50">–</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">EMA 200</div>
+        <div class="detail-value" id="d-ema200">–</div>
+      </div>
+    </div>
+
+    <div class="section-title">News Sentiment</div>
+    <div class="analysis-block" style="margin-bottom:12px">
+      <div class="analysis-row">
+        <span class="analysis-key">Sentiment</span>
+        <span class="analysis-val" id="d-sentiment">–</span>
+      </div>
+      <div class="analysis-row">
+        <span class="analysis-key">News</span>
+        <span class="analysis-val" id="d-news">–</span>
+      </div>
+      <div class="analysis-row">
+        <span class="analysis-key">Key Event</span>
+        <span class="analysis-val" id="d-event">–</span>
+      </div>
+    </div>
+
+    <div class="section-title">Technische Analyse</div>
+    <div class="analysis-block">
+      <div class="analysis-row">
+        <span class="analysis-key">Stärke</span>
+        <span class="analysis-val" id="d-strength">–</span>
+      </div>
+      <div class="analysis-row">
+        <span class="analysis-key">Technisch</span>
+        <span class="analysis-val" id="d-technical">–</span>
+      </div>
+      <div class="analysis-row">
+        <span class="analysis-key">Confluence</span>
+        <span class="analysis-val" id="d-confluence">–</span>
+      </div>
+      <div class="analysis-row">
+        <span class="analysis-key">Risiko</span>
+        <span class="analysis-val" id="d-risk">–</span>
+      </div>
+      <div class="analysis-row">
+        <span class="analysis-key">Entry</span>
+        <span class="analysis-val" id="d-entry">–</span>
+      </div>
+      <div class="analysis-row">
+        <span class="analysis-key">Invalidierung</span>
+        <span class="analysis-val" id="d-invalid">–</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let allSignals = [];
+  let activeFilter = 'ALL';
+
+  function formatTime(ts) {
+    const d = new Date(ts);
+    return d.toLocaleDateString('de-DE') + ' ' +
+      d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  async function loadSignals() {
+    try {
+      const res = await fetch('/api/signals?limit=100');
+      allSignals = await res.json();
+      document.getElementById('last-update').textContent = formatTime(new Date());
+      renderSignals();
+    } catch (err) {
+      document.getElementById('signals-list').innerHTML =
+        '<div class="empty">Verbindung zum Server fehlgeschlagen</div>';
+    }
+  }
+
+  function setFilter(f) {
+    activeFilter = f;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    renderSignals();
+  }
+
+  function renderSignals() {
+    const list = document.getElementById('signals-list');
+    let filtered = allSignals;
+
+    if (activeFilter !== 'ALL' && activeFilter !== 'LONG' && activeFilter !== 'SHORT') {
+      filtered = allSignals.filter(s => s.coin === activeFilter);
+    } else if (activeFilter === 'LONG' || activeFilter === 'SHORT') {
+      filtered = allSignals.filter(s => s.direction === activeFilter);
+    }
+
+    if (filtered.length === 0) {
+      list.innerHTML = '<div class="empty">Noch keine Signals – warte auf TradingView Alert</div>';
+      return;
+    }
+
+    list.innerHTML = filtered.map(s => `
+      <div class="signal-card ${s.direction.toLowerCase()}" onclick="openModal(${s.id})">
+        <span class="signal-direction">${s.direction}</span>
+        <span class="signal-coin">${s.coin}</span>
+        <span class="signal-time">${formatTime(s.created_at)}</span>
+        <span class="signal-summary">${s.summary || '–'}</span>
+        <span class="signal-price">$${parseFloat(s.price).toLocaleString('de-DE')}</span>
+        <span class="arrow">›</span>
+      </div>
+    `).join('');
+  }
+
+  async function openModal(id) {
+    const res = await fetch(`/api/signals/${id}`);
+    const s = await res.json();
+    const a = s.analysis || {};
+    const claude = a.claude || {};
+    const grok = a.grok || {};
+
+    document.getElementById('modal-coin').textContent = s.coin;
+    document.getElementById('modal-time').textContent = formatTime(s.created_at);
+
+    const badge = document.getElementById('modal-direction-badge');
+    badge.textContent = s.direction;
+    badge.className = 'signal-direction ' + s.direction.toLowerCase();
+
+    document.getElementById('d-price').textContent = '$' + parseFloat(s.price).toLocaleString('de-DE');
+    document.getElementById('d-rsi').textContent = s.rsi || '–';
+    document.getElementById('d-ema50').textContent = s.ema50 ? '$' + parseFloat(s.ema50).toLocaleString('de-DE') : '–';
+    document.getElementById('d-ema200').textContent = s.ema200 ? '$' + parseFloat(s.ema200).toLocaleString('de-DE') : '–';
+
+    const sentEl = document.getElementById('d-sentiment');
+    sentEl.textContent = grok.sentiment || '–';
+    sentEl.className = 'analysis-val ' + (grok.sentiment || '');
+
+    document.getElementById('d-news').textContent = grok.summary || '–';
+    document.getElementById('d-event').textContent = grok.key_event || '–';
+
+    const strength = claude.strength || 'unknown';
+    document.getElementById('d-strength').innerHTML =
+      `<span class="strength-badge strength-${strength}">${strength.toUpperCase()}</span>`;
+    document.getElementById('d-technical').textContent = claude.technical || '–';
+    document.getElementById('d-confluence').textContent = claude.confluence || '–';
+    document.getElementById('d-risk').textContent = claude.risk || '–';
+    document.getElementById('d-entry').textContent = claude.entry_note || '–';
+    document.getElementById('d-invalid').textContent = claude.invalidation || '–';
+
+    document.getElementById('modal').classList.add('active');
+  }
+
+  function closeModal(e) {
+    if (e.target === document.getElementById('modal')) {
+      document.getElementById('modal').classList.remove('active');
+    }
+  }
+
+  // Auto-refresh alle 60 Sekunden
+  loadSignals();
+  setInterval(loadSignals, 60000);
+</script>
+</body>
+</html>
