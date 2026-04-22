@@ -5,10 +5,11 @@ const { analyzeAndStore } = require('../services/analyzer');
 router.post('/', async (req, res) => {
   try {
     // Optional: Secret Token prüfen
-    const secret = req.headers['x-webhook-secret'];
-    if (process.env.WEBHOOK_SECRET && secret !== process.env.WEBHOOK_SECRET) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
+   const secret = req.headers['x-webhook-secret'] || req.query.secret;
+if (process.env.WEBHOOK_SECRET && secret !== process.env.WEBHOOK_SECRET) {
+  return res.status(401).json({ error: 'Unauthorized' });
+}
+    
 
     const payload = req.body;
     console.log('Webhook received:', payload);
