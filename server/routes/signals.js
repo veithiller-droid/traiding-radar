@@ -47,4 +47,13 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+router.delete('/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM signals WHERE id = $1', [req.params.id]);
+    res.json({ deleted: true });
+  } catch (err) {
+    res.status(500).json({ error: 'DB error' });
+  }
+});
+
 module.exports = router;
