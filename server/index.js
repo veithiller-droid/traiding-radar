@@ -14,6 +14,7 @@ app.use(express.static(path.join(__dirname, '../client')));
 // Routes
 app.use('/webhook', require('./routes/webhook'));
 app.use('/api/signals', require('./routes/signals'));
+app.use('/api/trades', require('./routes/trades'));
 
 // Health check
 app.get('/health', (req, res) => res.json({ status: 'ok' }));

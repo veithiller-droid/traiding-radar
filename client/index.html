@@ -52,7 +52,6 @@
     .filter-btn:hover { border-color: #4ade80; color: #fff; }
     .filter-btn.active { background: #1a2e1a; border-color: #4ade80; color: #4ade80; }
 
-    /* Trade Panel */
     .trade-panel {
       margin: 16px 24px;
       background: #13161e;
@@ -68,19 +67,13 @@
     .trade-panel.short-active { border-left: 3px solid #f87171; }
 
     .trade-panel-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 14px;
+      display: flex; align-items: center;
+      justify-content: space-between; margin-bottom: 14px;
     }
 
     .trade-panel-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      font-size: 13px; font-weight: 700; color: #fff;
+      display: flex; align-items: center; gap: 8px;
     }
 
     .trade-close-btn {
@@ -91,64 +84,39 @@
     .trade-close-btn:hover { color: #f87171; }
 
     .trade-inputs {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 14px;
-      flex-wrap: wrap;
+      display: flex; gap: 12px; margin-bottom: 14px; flex-wrap: wrap;
     }
 
-    .trade-input-group {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
+    .trade-input-group { display: flex; flex-direction: column; gap: 4px; }
 
     .trade-input-label {
-      font-size: 10px;
-      color: #555;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      font-size: 10px; color: #555;
+      text-transform: uppercase; letter-spacing: 1px;
     }
 
     .trade-input {
-      background: #0d0f14;
-      border: 1px solid #2a3040;
-      color: #e0e0e0;
-      padding: 6px 10px;
-      border-radius: 4px;
-      font-size: 13px;
-      font-family: inherit;
-      width: 140px;
+      background: #0d0f14; border: 1px solid #2a3040; color: #e0e0e0;
+      padding: 6px 10px; border-radius: 4px; font-size: 13px;
+      font-family: inherit; width: 140px;
     }
 
     .trade-input:focus { outline: none; border-color: #4ade80; }
 
     .trade-pnl-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
     }
 
     .trade-pnl-item {
-      background: #0d0f14;
-      border: 1px solid #1e2330;
-      border-radius: 4px;
-      padding: 10px 12px;
+      background: #0d0f14; border: 1px solid #1e2330;
+      border-radius: 4px; padding: 10px 12px;
     }
 
     .trade-pnl-label {
-      font-size: 10px;
-      color: #555;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 4px;
+      font-size: 10px; color: #555;
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;
     }
 
-    .trade-pnl-value {
-      font-size: 13px;
-      font-weight: 700;
-    }
-
+    .trade-pnl-value { font-size: 13px; font-weight: 700; }
     .trade-pnl-value.profit { color: #4ade80; }
     .trade-pnl-value.loss { color: #f87171; }
     .trade-pnl-value.neutral { color: #888; }
@@ -465,6 +433,40 @@
     }
   }
 
+  async function loadActiveTrade() {
+    try {
+      const res = await fetch('/api/trades/active');
+      const trade = await res.json();
+      if (trade) {
+        activeTrade = {
+          signal_id: trade.signal_id,
+          coin: trade.coin,
+          direction: trade.direction,
+          signalPrice: parseFloat(trade.signal_price),
+          tp1: parseFloat(trade.tp1),
+          tp2: parseFloat(trade.tp2),
+          sl: parseFloat(trade.sl)
+        };
+        showTradePanel();
+        document.getElementById('tp-entry').value = trade.entry_price || '';
+        document.getElementById('tp-position').value = trade.position_size || '';
+        if (trade.entry_price && trade.position_size) calcPnL();
+      }
+    } catch (err) {
+      console.log('No active trade');
+    }
+  }
+
+  function showTradePanel() {
+    const panel = document.getElementById('trade-panel');
+    panel.className = 'trade-panel active ' + (activeTrade.direction === 'SHORT' ? 'short-active' : 'long-active');
+    const badge = document.getElementById('tp-badge');
+    badge.textContent = activeTrade.direction;
+    badge.className = 'signal-direction ' + activeTrade.direction.toLowerCase();
+    document.getElementById('tp-coin').textContent = activeTrade.coin;
+    document.getElementById('tp-signal-price').textContent = '$' + activeTrade.signalPrice.toLocaleString('de-DE');
+  }
+
   function setFilter(f) {
     activeFilter = f;
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -511,7 +513,6 @@
     const claude = a.claude || {};
     const grok = a.grok || {};
 
-    // Signal für Trade-Aktivierung merken
     window._currentSignal = s;
     window._currentClaude = claude;
 
@@ -550,7 +551,6 @@
       document.getElementById('d-rr').textContent  = claude.rr;
       document.getElementById('levels-block').style.display = 'block';
 
-      // Activate Button nur für LONG/SHORT
       if (s.direction === 'LONG' || s.direction === 'SHORT') {
         const btn = document.getElementById('activate-btn');
         btn.style.display = 'block';
@@ -573,6 +573,7 @@
     if (!s || !claude) return;
 
     activeTrade = {
+      signal_id: s.id,
       coin: s.coin,
       direction: s.direction,
       signalPrice: parseFloat(s.price),
@@ -581,36 +582,21 @@
       sl: parseFloat(claude.sl)
     };
 
-    // Panel befüllen
-    const panel = document.getElementById('trade-panel');
-    panel.className = 'trade-panel active ' + (s.direction === 'SHORT' ? 'short-active' : 'long-active');
-
-    const badge = document.getElementById('tp-badge');
-    badge.textContent = s.direction;
-    badge.className = 'signal-direction ' + s.direction.toLowerCase();
-
-    document.getElementById('tp-coin').textContent = s.coin;
-    document.getElementById('tp-signal-price').textContent = '$' + parseFloat(s.price).toLocaleString('de-DE');
-
-    // Felder leeren
+    showTradePanel();
     document.getElementById('tp-entry').value = '';
     document.getElementById('tp-position').value = '';
     document.getElementById('tp-pnl-tp1').textContent = '–';
     document.getElementById('tp-pnl-tp2').textContent = '–';
     document.getElementById('tp-pnl-sl').textContent = '–';
-
     document.getElementById('modal').classList.remove('active');
-
-    // Scroll to panel
-    panel.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('trade-panel').scrollIntoView({ behavior: 'smooth' });
   }
 
-  function calcPnL() {
+  async function calcPnL() {
     if (!activeTrade) return;
 
     const entry = parseFloat(document.getElementById('tp-entry').value);
     const position = parseFloat(document.getElementById('tp-position').value);
-
     if (!entry || !position || entry <= 0 || position <= 0) return;
 
     const coins = position / entry;
@@ -627,15 +613,39 @@
 
     tp1El.textContent = '$' + activeTrade.tp1.toLocaleString('de-DE') + ' → ' + formatPnL(pnlTP1);
     tp1El.className = 'trade-pnl-value ' + (pnlTP1 >= 0 ? 'profit' : 'loss');
-
     tp2El.textContent = '$' + activeTrade.tp2.toLocaleString('de-DE') + ' → ' + formatPnL(pnlTP2);
     tp2El.className = 'trade-pnl-value ' + (pnlTP2 >= 0 ? 'profit' : 'loss');
-
     slEl.textContent = '$' + activeTrade.sl.toLocaleString('de-DE') + ' → ' + formatPnL(pnlSL);
     slEl.className = 'trade-pnl-value ' + (pnlSL >= 0 ? 'profit' : 'loss');
+
+    // In DB speichern
+    try {
+      await fetch('/api/trades', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          signal_id: activeTrade.signal_id,
+          coin: activeTrade.coin,
+          direction: activeTrade.direction,
+          signal_price: activeTrade.signalPrice,
+          entry_price: entry,
+          position_size: position,
+          tp1: activeTrade.tp1,
+          tp2: activeTrade.tp2,
+          sl: activeTrade.sl
+        })
+      });
+    } catch (err) {
+      console.error('Trade save error:', err);
+    }
   }
 
-  function closeTrade() {
+  async function closeTrade() {
+    try {
+      await fetch('/api/trades/close', { method: 'PATCH' });
+    } catch (err) {
+      console.error('Trade close error:', err);
+    }
     activeTrade = null;
     document.getElementById('trade-panel').className = 'trade-panel';
   }
@@ -654,6 +664,7 @@
   }
 
   loadSignals();
+  loadActiveTrade();
   setInterval(loadSignals, 60000);
 </script>
 </body>
