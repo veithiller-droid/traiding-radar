@@ -2,13 +2,13 @@ const express = require('express');
 const router = express.Router();
 const { pool } = require('../db');
 
-// Aktiven Trade holen
+// Alle aktiven Trades holen
 router.get('/active', async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT * FROM trades WHERE status = 'active' ORDER BY created_at DESC LIMIT 1`
+      `SELECT * FROM trades WHERE status = 'active' ORDER BY created_at DESC`
     );
-    res.json(result.rows[0] || null);
+    res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: 'DB error' });
   }
@@ -19,8 +19,11 @@ router.post('/', async (req, res) => {
   try {
     const { signal_id, coin, direction, signal_price, entry_price, position_size, tp1, tp2, sl } = req.body;
 
-    // Vorherige aktive Trades schließen
-    await pool.query(`UPDATE trades SET status = 'closed', closed_at = NOW() WHERE status = 'active'`);
+    // Vorherigen Trade für denselben Coin schließen
+    await pool.query(
+      `UPDATE trades SET status = 'closed', closed_at = NOW() WHERE status = 'active' AND coin = $1`,
+      [coin]
+    );
 
     const result = await pool.query(
       `INSERT INTO trades (signal_id, coin, direction, signal_price, entry_price, position_size, tp1, tp2, sl)
@@ -33,10 +36,13 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Trade schließen
-router.patch('/close', async (req, res) => {
+// Einzelnen Trade schließen
+router.patch('/:id/close', async (req, res) => {
   try {
-    await pool.query(`UPDATE trades SET status = 'closed', closed_at = NOW() WHERE status = 'active'`);
+    await pool.query(
+      `UPDATE trades SET status = 'closed', closed_at = NOW() WHERE id = $1`,
+      [req.params.id]
+    );
     res.json({ closed: true });
   } catch (err) {
     res.status(500).json({ error: 'DB error' });

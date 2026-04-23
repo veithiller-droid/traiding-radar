@@ -6,221 +6,104 @@
   <title>Trading Radar</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0d0f14; color: #e0e0e0; font-family: 'SF Mono', 'Fira Code', monospace; min-height: 100vh; }
 
-    body {
-      background: #0d0f14;
-      color: #e0e0e0;
-      font-family: 'SF Mono', 'Fira Code', monospace;
-      min-height: 100vh;
-    }
-
-    header {
-      background: #13161e;
-      border-bottom: 1px solid #1e2330;
-      padding: 16px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
+    header { background: #13161e; border-bottom: 1px solid #1e2330; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; }
     .logo { font-size: 18px; font-weight: 700; color: #fff; letter-spacing: 2px; }
     .logo span { color: #4ade80; }
-
     .status { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #666; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-    .dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: #4ade80; animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
-
-    .filter-bar {
-      padding: 16px 24px; display: flex; gap: 8px;
-      border-bottom: 1px solid #1e2330; flex-wrap: wrap;
-    }
-
-    .filter-btn {
-      background: #1e2330; border: 1px solid #2a3040; color: #888;
-      padding: 6px 14px; border-radius: 4px; cursor: pointer;
-      font-size: 12px; font-family: inherit; transition: all 0.15s;
-    }
-
+    .filter-bar { padding: 16px 24px; display: flex; gap: 8px; border-bottom: 1px solid #1e2330; flex-wrap: wrap; }
+    .filter-btn { background: #1e2330; border: 1px solid #2a3040; color: #888; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 12px; font-family: inherit; transition: all 0.15s; }
     .filter-btn:hover { border-color: #4ade80; color: #fff; }
     .filter-btn.active { background: #1a2e1a; border-color: #4ade80; color: #4ade80; }
 
-    .trade-panel {
-      margin: 16px 24px;
-      background: #13161e;
-      border: 1px solid #1e2330;
-      border-radius: 8px;
-      padding: 16px 20px;
-      max-width: 860px;
-      display: none;
+    /* Active Trades Section */
+    .trades-section { padding: 16px 24px 0; max-width: 900px; }
+    .trades-title { font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+
+    .trade-card {
+      background: #13161e; border: 1px solid #1e2330; border-radius: 8px;
+      padding: 14px 18px; margin-bottom: 8px;
     }
+    .trade-card.long-active { border-left: 3px solid #4ade80; }
+    .trade-card.short-active { border-left: 3px solid #f87171; }
 
-    .trade-panel.active { display: block; }
-    .trade-panel.long-active { border-left: 3px solid #4ade80; }
-    .trade-panel.short-active { border-left: 3px solid #f87171; }
+    .trade-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .trade-card-left { display: flex; align-items: center; gap: 10px; }
+    .trade-card-coin { font-size: 15px; font-weight: 700; color: #fff; }
+    .trade-card-time { font-size: 11px; color: #555; }
 
-    .trade-panel-header {
-      display: flex; align-items: center;
-      justify-content: space-between; margin-bottom: 14px;
-    }
-
-    .trade-panel-title {
-      font-size: 13px; font-weight: 700; color: #fff;
-      display: flex; align-items: center; gap: 8px;
-    }
-
-    .trade-close-btn {
-      background: none; border: none; color: #555;
-      cursor: pointer; font-size: 16px; padding: 2px 6px;
-    }
-
-    .trade-close-btn:hover { color: #f87171; }
-
-    .trade-inputs {
-      display: flex; gap: 12px; margin-bottom: 14px; flex-wrap: wrap;
-    }
-
-    .trade-input-group { display: flex; flex-direction: column; gap: 4px; }
-
-    .trade-input-label {
-      font-size: 10px; color: #555;
-      text-transform: uppercase; letter-spacing: 1px;
-    }
-
-    .trade-input {
-      background: #0d0f14; border: 1px solid #2a3040; color: #e0e0e0;
-      padding: 6px 10px; border-radius: 4px; font-size: 13px;
-      font-family: inherit; width: 140px;
-    }
-
+    .trade-card-inputs { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+    .trade-input-group { display: flex; flex-direction: column; gap: 3px; }
+    .trade-input-label { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; }
+    .trade-input { background: #0d0f14; border: 1px solid #2a3040; color: #e0e0e0; padding: 5px 8px; border-radius: 4px; font-size: 12px; font-family: inherit; width: 120px; }
     .trade-input:focus { outline: none; border-color: #4ade80; }
 
-    .trade-pnl-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
-    }
-
-    .trade-pnl-item {
-      background: #0d0f14; border: 1px solid #1e2330;
-      border-radius: 4px; padding: 10px 12px;
-    }
-
-    .trade-pnl-label {
-      font-size: 10px; color: #555;
-      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;
-    }
-
-    .trade-pnl-value { font-size: 13px; font-weight: 700; }
+    .trade-pnl-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px; }
+    .trade-pnl-item { background: #0d0f14; border: 1px solid #1e2330; border-radius: 4px; padding: 8px 10px; }
+    .trade-pnl-label { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
+    .trade-pnl-value { font-size: 12px; font-weight: 700; }
     .trade-pnl-value.profit { color: #4ade80; }
     .trade-pnl-value.loss { color: #f87171; }
     .trade-pnl-value.neutral { color: #888; }
 
+    .trade-close-btn { background: #2e1a1a; border: 1px solid #f87171; color: #f87171; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; font-family: inherit; }
+    .trade-close-btn:hover { background: #f87171; color: #000; }
+
     .signals-container { padding: 24px; max-width: 900px; }
-
-    .signal-card {
-      background: #13161e; border: 1px solid #1e2330;
-      border-left: 3px solid transparent; border-radius: 6px;
-      padding: 14px 18px; margin-bottom: 8px; cursor: pointer;
-      display: flex; align-items: center; gap: 16px; transition: all 0.15s;
-    }
-
+    .signal-card { background: #13161e; border: 1px solid #1e2330; border-left: 3px solid transparent; border-radius: 6px; padding: 14px 18px; margin-bottom: 8px; cursor: pointer; display: flex; align-items: center; gap: 16px; transition: all 0.15s; }
     .signal-card:hover { border-color: #2a3040; background: #161920; }
     .signal-card.long { border-left-color: #4ade80; }
     .signal-card.short { border-left-color: #f87171; }
-    .signal-card.long_exit  { border-left-color: #fbbf24; }
+    .signal-card.long_exit { border-left-color: #fbbf24; }
     .signal-card.short_exit { border-left-color: #fbbf24; }
 
-    .signal-direction {
-      font-size: 11px; font-weight: 700; letter-spacing: 1px;
-      padding: 3px 8px; border-radius: 3px; min-width: 52px; text-align: center;
-    }
-
-    .long .signal-direction,
-    .signal-direction.long { background: #1a2e1a; color: #4ade80; }
-    .short .signal-direction,
-    .signal-direction.short { background: #2e1a1a; color: #f87171; }
-    .signal-direction.long_exit,
-    .signal-direction.short_exit { background: #2a2510; color: #fbbf24; }
+    .signal-direction { font-size: 11px; font-weight: 700; letter-spacing: 1px; padding: 3px 8px; border-radius: 3px; min-width: 52px; text-align: center; }
+    .long .signal-direction, .signal-direction.long { background: #1a2e1a; color: #4ade80; }
+    .short .signal-direction, .signal-direction.short { background: #2e1a1a; color: #f87171; }
+    .signal-direction.long_exit, .signal-direction.short_exit { background: #2a2510; color: #fbbf24; }
 
     .signal-coin { font-size: 15px; font-weight: 700; color: #fff; min-width: 50px; }
     .signal-time { font-size: 11px; color: #555; min-width: 130px; }
     .signal-summary { font-size: 12px; color: #888; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .signal-price { font-size: 12px; color: #aaa; min-width: 80px; text-align: right; }
-
     .delete-btn { color: #333; cursor: pointer; padding: 4px 8px; border-radius: 3px; font-size: 14px; }
     .delete-btn:hover { color: #f87171; background: #2e1a1a; }
 
-    .modal-overlay {
-      display: none; position: fixed; inset: 0;
-      background: rgba(0,0,0,0.7); z-index: 100;
-      align-items: center; justify-content: center;
-    }
-
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; }
     .modal-overlay.active { display: flex; }
-
-    .modal {
-      background: #13161e; border: 1px solid #2a3040;
-      border-radius: 8px; padding: 28px; max-width: 560px;
-      width: 90%; max-height: 80vh; overflow-y: auto;
-    }
-
+    .modal { background: #13161e; border: 1px solid #2a3040; border-radius: 8px; padding: 28px; max-width: 560px; width: 90%; max-height: 80vh; overflow-y: auto; }
     .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
     .modal-title { display: flex; align-items: center; gap: 12px; }
     .modal-coin { font-size: 22px; font-weight: 700; color: #fff; }
     .modal-time { font-size: 12px; color: #555; margin-top: 2px; }
-
     .close-btn { background: none; border: none; color: #555; cursor: pointer; font-size: 20px; padding: 4px 8px; }
     .close-btn:hover { color: #fff; }
-
     .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-
     .detail-item { background: #0d0f14; border: 1px solid #1e2330; border-radius: 4px; padding: 12px; }
     .detail-label { font-size: 10px; color: #555; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
     .detail-value { font-size: 14px; color: #e0e0e0; }
     .detail-value.bullish { color: #4ade80; }
     .detail-value.bearish { color: #f87171; }
-    .detail-value.neutral { color: #fbbf24; }
-
     .section-title { font-size: 11px; color: #555; letter-spacing: 1px; text-transform: uppercase; margin: 16px 0 8px; }
-
     .analysis-block { background: #0d0f14; border: 1px solid #1e2330; border-radius: 4px; padding: 14px; font-size: 13px; line-height: 1.8; }
-
     .analysis-row { display: flex; gap: 8px; margin-bottom: 6px; }
     .analysis-key { color: #555; min-width: 110px; font-size: 11px; text-transform: uppercase; padding-top: 2px; }
     .analysis-val { color: #ccc; flex: 1; }
-
     .strength-badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 700; }
     .strength-stark { background: #1a2e1a; color: #4ade80; }
     .strength-mittel { background: #2a2a1a; color: #fbbf24; }
     .strength-schwach { background: #2e1a1a; color: #f87171; }
-
-    .activate-btn {
-      margin-top: 16px; width: 100%; padding: 10px;
-      background: #1a2e1a; border: 1px solid #4ade80;
-      color: #4ade80; border-radius: 4px; cursor: pointer;
-      font-size: 13px; font-family: inherit; font-weight: 700;
-      transition: all 0.15s;
-    }
-
+    .activate-btn { margin-top: 16px; width: 100%; padding: 10px; background: #1a2e1a; border: 1px solid #4ade80; color: #4ade80; border-radius: 4px; cursor: pointer; font-size: 13px; font-family: inherit; font-weight: 700; transition: all 0.15s; }
     .activate-btn:hover { background: #4ade80; color: #000; }
     .activate-btn.short-btn { background: #2e1a1a; border-color: #f87171; color: #f87171; }
     .activate-btn.short-btn:hover { background: #f87171; color: #000; }
-
     .empty { text-align: center; color: #333; padding: 60px 24px; font-size: 14px; }
     .loading { text-align: center; color: #333; padding: 40px; }
-
-    .refresh-btn {
-      background: #1e2330; border: 1px solid #2a3040; color: #888;
-      padding: 6px 14px; border-radius: 4px; cursor: pointer;
-      font-size: 12px; font-family: inherit;
-    }
-
+    .refresh-btn { background: #1e2330; border: 1px solid #2a3040; color: #888; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 12px; font-family: inherit; }
     .refresh-btn:hover { color: #fff; }
   </style>
 </head>
@@ -230,10 +113,7 @@
   <div class="logo">TRADING<span>RADAR</span></div>
   <div style="display:flex;gap:12px;align-items:center">
     <button class="refresh-btn" onclick="loadSignals()">↻ Refresh</button>
-    <div class="status">
-      <div class="dot"></div>
-      <span id="last-update">–</span>
-    </div>
+    <div class="status"><div class="dot"></div><span id="last-update">–</span></div>
   </div>
 </header>
 
@@ -253,46 +133,9 @@
   <button class="filter-btn" onclick="setFilter('SHORT')">SHORT</button>
 </div>
 
-<!-- Trade Panel -->
-<div class="trade-panel" id="trade-panel">
-  <div class="trade-panel-header">
-    <div class="trade-panel-title">
-      <span id="tp-badge" class="signal-direction">–</span>
-      <span id="tp-coin">–</span>
-      <span style="color:#555;font-size:11px">AKTIVER TRADE</span>
-    </div>
-    <button class="trade-close-btn" onclick="closeTrade()">✕ Trade schließen</button>
-  </div>
-
-  <div class="trade-inputs">
-    <div class="trade-input-group">
-      <div class="trade-input-label">Mein Entry ($)</div>
-      <input type="number" class="trade-input" id="tp-entry" placeholder="z.B. 77650" oninput="calcPnL()">
-    </div>
-    <div class="trade-input-group">
-      <div class="trade-input-label">Position ($)</div>
-      <input type="number" class="trade-input" id="tp-position" placeholder="z.B. 1000" oninput="calcPnL()">
-    </div>
-  </div>
-
-  <div class="trade-pnl-grid">
-    <div class="trade-pnl-item">
-      <div class="trade-pnl-label">Signal Preis</div>
-      <div class="trade-pnl-value neutral" id="tp-signal-price">–</div>
-    </div>
-    <div class="trade-pnl-item">
-      <div class="trade-pnl-label">TP1 → PnL</div>
-      <div class="trade-pnl-value" id="tp-pnl-tp1">–</div>
-    </div>
-    <div class="trade-pnl-item">
-      <div class="trade-pnl-label">TP2 → PnL</div>
-      <div class="trade-pnl-value" id="tp-pnl-tp2">–</div>
-    </div>
-    <div class="trade-pnl-item">
-      <div class="trade-pnl-label">SL → PnL</div>
-      <div class="trade-pnl-value" id="tp-pnl-sl">–</div>
-    </div>
-  </div>
+<!-- Aktive Trades -->
+<div class="trades-section">
+  <div id="active-trades-container"></div>
 </div>
 
 <div class="signals-container">
@@ -314,111 +157,180 @@
     </div>
 
     <div class="detail-grid">
-      <div class="detail-item">
-        <div class="detail-label">Preis</div>
-        <div class="detail-value" id="d-price">–</div>
-      </div>
-      <div class="detail-item">
-        <div class="detail-label">RSI</div>
-        <div class="detail-value" id="d-rsi">–</div>
-      </div>
-      <div class="detail-item">
-        <div class="detail-label">EMA 50</div>
-        <div class="detail-value" id="d-ema50">–</div>
-      </div>
-      <div class="detail-item">
-        <div class="detail-label">EMA 200</div>
-        <div class="detail-value" id="d-ema200">–</div>
-      </div>
+      <div class="detail-item"><div class="detail-label">Preis</div><div class="detail-value" id="d-price">–</div></div>
+      <div class="detail-item"><div class="detail-label">RSI</div><div class="detail-value" id="d-rsi">–</div></div>
+      <div class="detail-item"><div class="detail-label">EMA 50</div><div class="detail-value" id="d-ema50">–</div></div>
+      <div class="detail-item"><div class="detail-label">EMA 200</div><div class="detail-value" id="d-ema200">–</div></div>
     </div>
 
     <div class="section-title">News Sentiment</div>
     <div class="analysis-block" style="margin-bottom:12px">
-      <div class="analysis-row">
-        <span class="analysis-key">Sentiment</span>
-        <span class="analysis-val" id="d-sentiment">–</span>
-      </div>
-      <div class="analysis-row">
-        <span class="analysis-key">News</span>
-        <span class="analysis-val" id="d-news">–</span>
-      </div>
-      <div class="analysis-row">
-        <span class="analysis-key">Key Event</span>
-        <span class="analysis-val" id="d-event">–</span>
-      </div>
+      <div class="analysis-row"><span class="analysis-key">Sentiment</span><span class="analysis-val" id="d-sentiment">–</span></div>
+      <div class="analysis-row"><span class="analysis-key">News</span><span class="analysis-val" id="d-news">–</span></div>
+      <div class="analysis-row"><span class="analysis-key">Key Event</span><span class="analysis-val" id="d-event">–</span></div>
     </div>
 
     <div class="section-title">Technische Analyse</div>
     <div class="analysis-block">
-      <div class="analysis-row">
-        <span class="analysis-key">Stärke</span>
-        <span class="analysis-val" id="d-strength">–</span>
-      </div>
-      <div class="analysis-row">
-        <span class="analysis-key">Technisch</span>
-        <span class="analysis-val" id="d-technical">–</span>
-      </div>
-      <div class="analysis-row">
-        <span class="analysis-key">Confluence</span>
-        <span class="analysis-val" id="d-confluence">–</span>
-      </div>
-      <div class="analysis-row">
-        <span class="analysis-key">Risiko</span>
-        <span class="analysis-val" id="d-risk">–</span>
-      </div>
-      <div class="analysis-row">
-        <span class="analysis-key">Entry</span>
-        <span class="analysis-val" id="d-entry">–</span>
-      </div>
-      <div class="analysis-row">
-        <span class="analysis-key">Invalidierung</span>
-        <span class="analysis-val" id="d-invalid">–</span>
-      </div>
+      <div class="analysis-row"><span class="analysis-key">Stärke</span><span class="analysis-val" id="d-strength">–</span></div>
+      <div class="analysis-row"><span class="analysis-key">Technisch</span><span class="analysis-val" id="d-technical">–</span></div>
+      <div class="analysis-row"><span class="analysis-key">Confluence</span><span class="analysis-val" id="d-confluence">–</span></div>
+      <div class="analysis-row"><span class="analysis-key">Risiko</span><span class="analysis-val" id="d-risk">–</span></div>
+      <div class="analysis-row"><span class="analysis-key">Entry</span><span class="analysis-val" id="d-entry">–</span></div>
+      <div class="analysis-row"><span class="analysis-key">Invalidierung</span><span class="analysis-val" id="d-invalid">–</span></div>
     </div>
 
     <div id="levels-block" style="display:none">
       <div class="section-title">Levels</div>
       <div class="detail-grid">
-        <div class="detail-item">
-          <div class="detail-label">TP1</div>
-          <div class="detail-value bullish" id="d-tp1">–</div>
-        </div>
-        <div class="detail-item">
-          <div class="detail-label">TP2</div>
-          <div class="detail-value bullish" id="d-tp2">–</div>
-        </div>
-        <div class="detail-item">
-          <div class="detail-label">SL</div>
-          <div class="detail-value bearish" id="d-sl">–</div>
-        </div>
-        <div class="detail-item">
-          <div class="detail-label">Risk/Reward</div>
-          <div class="detail-value" id="d-rr">–</div>
-        </div>
+        <div class="detail-item"><div class="detail-label">TP1</div><div class="detail-value bullish" id="d-tp1">–</div></div>
+        <div class="detail-item"><div class="detail-label">TP2</div><div class="detail-value bullish" id="d-tp2">–</div></div>
+        <div class="detail-item"><div class="detail-label">SL</div><div class="detail-value bearish" id="d-sl">–</div></div>
+        <div class="detail-item"><div class="detail-label">Risk/Reward</div><div class="detail-value" id="d-rr">–</div></div>
       </div>
     </div>
 
-    <button class="activate-btn" id="activate-btn" onclick="activateTrade()" style="display:none">
-      ▶ Trade aktivieren
-    </button>
-
+    <button class="activate-btn" id="activate-btn" onclick="activateTrade()" style="display:none">▶ Trade aktivieren</button>
   </div>
 </div>
 
 <script>
   let allSignals = [];
+  let activeTrades = {};
   let activeFilter = 'ALL';
-  let activeTrade = null;
 
   function formatTime(ts) {
     const d = new Date(ts);
-    return d.toLocaleDateString('de-DE') + ' ' +
-      d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+    return d.toLocaleDateString('de-DE') + ' ' + d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
   }
 
   function formatPnL(val) {
     const sign = val >= 0 ? '+' : '';
     return sign + val.toFixed(2).replace('.', ',') + ' $';
+  }
+
+  function calcTradePnL(trade) {
+    const entry = parseFloat(document.getElementById('tp-entry-' + trade.id).value);
+    const position = parseFloat(document.getElementById('tp-pos-' + trade.id).value);
+    if (!entry || !position || entry <= 0 || position <= 0) return;
+
+    const coins = position / entry;
+    const isLong = trade.direction === 'LONG';
+    const mult = isLong ? 1 : -1;
+
+    const pnlTP1 = (parseFloat(trade.tp1) - entry) * coins * mult;
+    const pnlTP2 = (parseFloat(trade.tp2) - entry) * coins * mult;
+    const pnlSL  = (parseFloat(trade.sl)  - entry) * coins * mult;
+
+    const tp1El = document.getElementById('pnl-tp1-' + trade.id);
+    const tp2El = document.getElementById('pnl-tp2-' + trade.id);
+    const slEl  = document.getElementById('pnl-sl-' + trade.id);
+
+    tp1El.textContent = '$' + parseFloat(trade.tp1).toLocaleString('de-DE') + ' → ' + formatPnL(pnlTP1);
+    tp1El.className = 'trade-pnl-value ' + (pnlTP1 >= 0 ? 'profit' : 'loss');
+    tp2El.textContent = '$' + parseFloat(trade.tp2).toLocaleString('de-DE') + ' → ' + formatPnL(pnlTP2);
+    tp2El.className = 'trade-pnl-value ' + (pnlTP2 >= 0 ? 'profit' : 'loss');
+    slEl.textContent = '$' + parseFloat(trade.sl).toLocaleString('de-DE') + ' → ' + formatPnL(pnlSL);
+    slEl.className = 'trade-pnl-value ' + (pnlSL >= 0 ? 'profit' : 'loss');
+
+    // In DB speichern
+    fetch('/api/trades', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        signal_id: trade.signal_id,
+        coin: trade.coin,
+        direction: trade.direction,
+        signal_price: trade.signal_price,
+        entry_price: entry,
+        position_size: position,
+        tp1: trade.tp1,
+        tp2: trade.tp2,
+        sl: trade.sl
+      })
+    }).catch(err => console.error('Trade save error:', err));
+  }
+
+  async function closeTrade(id) {
+    await fetch('/api/trades/' + id + '/close', { method: 'PATCH' });
+    delete activeTrades[id];
+    renderActiveTrades();
+  }
+
+  function renderActiveTrades() {
+    const container = document.getElementById('active-trades-container');
+    const trades = Object.values(activeTrades);
+
+    if (trades.length === 0) {
+      container.innerHTML = '';
+      return;
+    }
+
+    container.innerHTML = '<div class="trades-title">Aktive Trades (' + trades.length + ')</div>' +
+      trades.map(t => `
+        <div class="trade-card ${t.direction === 'SHORT' ? 'short-active' : 'long-active'}">
+          <div class="trade-card-header">
+            <div class="trade-card-left">
+              <span class="signal-direction ${t.direction.toLowerCase()}">${t.direction}</span>
+              <span class="trade-card-coin">${t.coin}</span>
+              <span class="trade-card-time">${formatTime(t.created_at)}</span>
+              <span class="trade-card-time" style="color:#666">Signal: $${parseFloat(t.signal_price).toLocaleString('de-DE')}</span>
+            </div>
+            <button class="trade-close-btn" onclick="closeTrade(${t.id})">✕ Schließen</button>
+          </div>
+
+          <div class="trade-card-inputs">
+            <div class="trade-input-group">
+              <div class="trade-input-label">Mein Entry ($)</div>
+              <input type="number" class="trade-input" id="tp-entry-${t.id}"
+                value="${t.entry_price || ''}" placeholder="z.B. 9.27"
+                oninput="calcTradePnL(${JSON.stringify(t).replace(/"/g, '&quot;')})">
+            </div>
+            <div class="trade-input-group">
+              <div class="trade-input-label">Position ($)</div>
+              <input type="number" class="trade-input" id="tp-pos-${t.id}"
+                value="${t.position_size || ''}" placeholder="z.B. 100"
+                oninput="calcTradePnL(${JSON.stringify(t).replace(/"/g, '&quot;')})">
+            </div>
+          </div>
+
+          <div class="trade-pnl-grid">
+            <div class="trade-pnl-item">
+              <div class="trade-pnl-label">Signal Preis</div>
+              <div class="trade-pnl-value neutral">$${parseFloat(t.signal_price).toLocaleString('de-DE')}</div>
+            </div>
+            <div class="trade-pnl-item">
+              <div class="trade-pnl-label">TP1 → PnL</div>
+              <div class="trade-pnl-value neutral" id="pnl-tp1-${t.id}">$${parseFloat(t.tp1).toLocaleString('de-DE')}</div>
+            </div>
+            <div class="trade-pnl-item">
+              <div class="trade-pnl-label">TP2 → PnL</div>
+              <div class="trade-pnl-value neutral" id="pnl-tp2-${t.id}">$${parseFloat(t.tp2).toLocaleString('de-DE')}</div>
+            </div>
+            <div class="trade-pnl-item">
+              <div class="trade-pnl-label">SL → PnL</div>
+              <div class="trade-pnl-value neutral" id="pnl-sl-${t.id}">$${parseFloat(t.sl).toLocaleString('de-DE')}</div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+    // PnL berechnen wenn Werte vorhanden
+    trades.forEach(t => {
+      if (t.entry_price && t.position_size) calcTradePnL(t);
+    });
+  }
+
+  async function loadActiveTrades() {
+    try {
+      const res = await fetch('/api/trades/active');
+      const trades = await res.json();
+      activeTrades = {};
+      trades.forEach(t => activeTrades[t.id] = t);
+      renderActiveTrades();
+    } catch (err) {
+      console.log('No active trades');
+    }
   }
 
   async function loadSignals() {
@@ -428,43 +340,8 @@
       document.getElementById('last-update').textContent = formatTime(new Date());
       renderSignals();
     } catch (err) {
-      document.getElementById('signals-list').innerHTML =
-        '<div class="empty">Verbindung zum Server fehlgeschlagen</div>';
+      document.getElementById('signals-list').innerHTML = '<div class="empty">Verbindung zum Server fehlgeschlagen</div>';
     }
-  }
-
-  async function loadActiveTrade() {
-    try {
-      const res = await fetch('/api/trades/active');
-      const trade = await res.json();
-      if (trade) {
-        activeTrade = {
-          signal_id: trade.signal_id,
-          coin: trade.coin,
-          direction: trade.direction,
-          signalPrice: parseFloat(trade.signal_price),
-          tp1: parseFloat(trade.tp1),
-          tp2: parseFloat(trade.tp2),
-          sl: parseFloat(trade.sl)
-        };
-        showTradePanel();
-        document.getElementById('tp-entry').value = trade.entry_price || '';
-        document.getElementById('tp-position').value = trade.position_size || '';
-        if (trade.entry_price && trade.position_size) calcPnL();
-      }
-    } catch (err) {
-      console.log('No active trade');
-    }
-  }
-
-  function showTradePanel() {
-    const panel = document.getElementById('trade-panel');
-    panel.className = 'trade-panel active ' + (activeTrade.direction === 'SHORT' ? 'short-active' : 'long-active');
-    const badge = document.getElementById('tp-badge');
-    badge.textContent = activeTrade.direction;
-    badge.className = 'signal-direction ' + activeTrade.direction.toLowerCase();
-    document.getElementById('tp-coin').textContent = activeTrade.coin;
-    document.getElementById('tp-signal-price').textContent = '$' + activeTrade.signalPrice.toLocaleString('de-DE');
   }
 
   function setFilter(f) {
@@ -477,37 +354,31 @@
   function renderSignals() {
     const list = document.getElementById('signals-list');
     let filtered = allSignals;
-
     if (activeFilter !== 'ALL' && activeFilter !== 'LONG' && activeFilter !== 'SHORT') {
       filtered = allSignals.filter(s => s.coin === activeFilter);
     } else if (activeFilter === 'LONG' || activeFilter === 'SHORT') {
       filtered = allSignals.filter(s => s.direction === activeFilter);
     }
-
     if (filtered.length === 0) {
       list.innerHTML = '<div class="empty">Noch keine Signals – warte auf TradingView Alert</div>';
       return;
     }
-
     list.innerHTML = filtered.map(s => {
       const dir = s.direction.toLowerCase();
-      const label = s.direction === 'LONG_EXIT' ? '🟡 EXIT L' :
-                    s.direction === 'SHORT_EXIT' ? '🟡 EXIT S' :
-                    s.direction;
-      return `
-        <div class="signal-card ${dir}" onclick="openModal(${s.id})">
-          <span class="signal-direction ${dir}">${label}</span>
-          <span class="signal-coin">${s.coin}</span>
-          <span class="signal-time">${formatTime(s.created_at)}</span>
-          <span class="signal-summary">${s.summary || '–'}</span>
-          <span class="signal-price">$${parseFloat(s.price).toLocaleString('de-DE')}</span>
-          <span class="delete-btn" onclick="deleteSignal(event, ${s.id})">✕</span>
-        </div>`;
+      const label = s.direction === 'LONG_EXIT' ? '🟡 EXIT L' : s.direction === 'SHORT_EXIT' ? '🟡 EXIT S' : s.direction;
+      return `<div class="signal-card ${dir}" onclick="openModal(${s.id})">
+        <span class="signal-direction ${dir}">${label}</span>
+        <span class="signal-coin">${s.coin}</span>
+        <span class="signal-time">${formatTime(s.created_at)}</span>
+        <span class="signal-summary">${s.summary || '–'}</span>
+        <span class="signal-price">$${parseFloat(s.price).toLocaleString('de-DE')}</span>
+        <span class="delete-btn" onclick="deleteSignal(event, ${s.id})">✕</span>
+      </div>`;
     }).join('');
   }
 
   async function openModal(id) {
-    const res = await fetch(`/api/signals/${id}`);
+    const res = await fetch('/api/signals/' + id);
     const s = await res.json();
     const a = s.analysis || {};
     const claude = a.claude || {};
@@ -518,7 +389,6 @@
 
     document.getElementById('modal-coin').textContent = s.coin;
     document.getElementById('modal-time').textContent = formatTime(s.created_at);
-
     const badge = document.getElementById('modal-direction-badge');
     badge.textContent = s.direction;
     badge.className = 'signal-direction ' + s.direction.toLowerCase();
@@ -531,13 +401,11 @@
     const sentEl = document.getElementById('d-sentiment');
     sentEl.textContent = grok.sentiment || '–';
     sentEl.className = 'analysis-val ' + (grok.sentiment || '');
-
     document.getElementById('d-news').textContent = grok.summary || '–';
     document.getElementById('d-event').textContent = grok.key_event || '–';
 
     const strength = claude.strength || 'unknown';
-    document.getElementById('d-strength').innerHTML =
-      `<span class="strength-badge strength-${strength}">${strength.toUpperCase()}</span>`;
+    document.getElementById('d-strength').innerHTML = `<span class="strength-badge strength-${strength}">${strength.toUpperCase()}</span>`;
     document.getElementById('d-technical').textContent = claude.technical || '–';
     document.getElementById('d-confluence').textContent = claude.confluence || '–';
     document.getElementById('d-risk').textContent = claude.risk || '–';
@@ -547,15 +415,15 @@
     if (claude.tp1 && claude.tp1 !== '-') {
       document.getElementById('d-tp1').textContent = '$' + parseFloat(claude.tp1).toLocaleString('de-DE');
       document.getElementById('d-tp2').textContent = '$' + parseFloat(claude.tp2).toLocaleString('de-DE');
-      document.getElementById('d-sl').textContent  = '$' + parseFloat(claude.sl).toLocaleString('de-DE');
-      document.getElementById('d-rr').textContent  = claude.rr;
+      document.getElementById('d-sl').textContent = '$' + parseFloat(claude.sl).toLocaleString('de-DE');
+      document.getElementById('d-rr').textContent = claude.rr;
       document.getElementById('levels-block').style.display = 'block';
 
       if (s.direction === 'LONG' || s.direction === 'SHORT') {
         const btn = document.getElementById('activate-btn');
         btn.style.display = 'block';
         btn.className = s.direction === 'SHORT' ? 'activate-btn short-btn' : 'activate-btn';
-        btn.textContent = `▶ ${s.direction} Trade aktivieren`;
+        btn.textContent = '▶ ' + s.direction + ' Trade aktivieren';
       } else {
         document.getElementById('activate-btn').style.display = 'none';
       }
@@ -563,97 +431,40 @@
       document.getElementById('levels-block').style.display = 'none';
       document.getElementById('activate-btn').style.display = 'none';
     }
-
     document.getElementById('modal').classList.add('active');
   }
 
-  function activateTrade() {
+  async function activateTrade() {
     const s = window._currentSignal;
     const claude = window._currentClaude;
     if (!s || !claude) return;
 
-    activeTrade = {
-      signal_id: s.id,
-      coin: s.coin,
-      direction: s.direction,
-      signalPrice: parseFloat(s.price),
-      tp1: parseFloat(claude.tp1),
-      tp2: parseFloat(claude.tp2),
-      sl: parseFloat(claude.sl)
-    };
-
-    showTradePanel();
-    document.getElementById('tp-entry').value = '';
-    document.getElementById('tp-position').value = '';
-    document.getElementById('tp-pnl-tp1').textContent = '–';
-    document.getElementById('tp-pnl-tp2').textContent = '–';
-    document.getElementById('tp-pnl-sl').textContent = '–';
+    const res = await fetch('/api/trades', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        signal_id: s.id,
+        coin: s.coin,
+        direction: s.direction,
+        signal_price: parseFloat(s.price),
+        entry_price: null,
+        position_size: null,
+        tp1: parseFloat(claude.tp1),
+        tp2: parseFloat(claude.tp2),
+        sl: parseFloat(claude.sl)
+      })
+    });
+    const trade = await res.json();
+    activeTrades[trade.id] = trade;
+    renderActiveTrades();
     document.getElementById('modal').classList.remove('active');
-    document.getElementById('trade-panel').scrollIntoView({ behavior: 'smooth' });
-  }
-
-  async function calcPnL() {
-    if (!activeTrade) return;
-
-    const entry = parseFloat(document.getElementById('tp-entry').value);
-    const position = parseFloat(document.getElementById('tp-position').value);
-    if (!entry || !position || entry <= 0 || position <= 0) return;
-
-    const coins = position / entry;
-    const isLong = activeTrade.direction === 'LONG';
-    const mult = isLong ? 1 : -1;
-
-    const pnlTP1 = (activeTrade.tp1 - entry) * coins * mult;
-    const pnlTP2 = (activeTrade.tp2 - entry) * coins * mult;
-    const pnlSL  = (activeTrade.sl  - entry) * coins * mult;
-
-    const tp1El = document.getElementById('tp-pnl-tp1');
-    const tp2El = document.getElementById('tp-pnl-tp2');
-    const slEl  = document.getElementById('tp-pnl-sl');
-
-    tp1El.textContent = '$' + activeTrade.tp1.toLocaleString('de-DE') + ' → ' + formatPnL(pnlTP1);
-    tp1El.className = 'trade-pnl-value ' + (pnlTP1 >= 0 ? 'profit' : 'loss');
-    tp2El.textContent = '$' + activeTrade.tp2.toLocaleString('de-DE') + ' → ' + formatPnL(pnlTP2);
-    tp2El.className = 'trade-pnl-value ' + (pnlTP2 >= 0 ? 'profit' : 'loss');
-    slEl.textContent = '$' + activeTrade.sl.toLocaleString('de-DE') + ' → ' + formatPnL(pnlSL);
-    slEl.className = 'trade-pnl-value ' + (pnlSL >= 0 ? 'profit' : 'loss');
-
-    // In DB speichern
-    try {
-      await fetch('/api/trades', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          signal_id: activeTrade.signal_id,
-          coin: activeTrade.coin,
-          direction: activeTrade.direction,
-          signal_price: activeTrade.signalPrice,
-          entry_price: entry,
-          position_size: position,
-          tp1: activeTrade.tp1,
-          tp2: activeTrade.tp2,
-          sl: activeTrade.sl
-        })
-      });
-    } catch (err) {
-      console.error('Trade save error:', err);
-    }
-  }
-
-  async function closeTrade() {
-    try {
-      await fetch('/api/trades/close', { method: 'PATCH' });
-    } catch (err) {
-      console.error('Trade close error:', err);
-    }
-    activeTrade = null;
-    document.getElementById('trade-panel').className = 'trade-panel';
+    document.querySelector('.trades-section').scrollIntoView({ behavior: 'smooth' });
   }
 
   async function deleteSignal(e, id) {
     e.stopPropagation();
     if (!confirm('Signal löschen?')) return;
-    await fetch(`/api/signals/${id}`, { method: 'DELETE' });
+    await fetch('/api/signals/' + id, { method: 'DELETE' });
     loadSignals();
   }
 
@@ -664,7 +475,7 @@
   }
 
   loadSignals();
-  loadActiveTrade();
+  loadActiveTrades();
   setInterval(loadSignals, 60000);
 </script>
 </body>
