@@ -23,29 +23,14 @@
       justify-content: space-between;
     }
 
-    .logo {
-      font-size: 18px;
-      font-weight: 700;
-      color: #fff;
-      letter-spacing: 2px;
-    }
-
+    .logo { font-size: 18px; font-weight: 700; color: #fff; letter-spacing: 2px; }
     .logo span { color: #4ade80; }
 
-    .status {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      color: #666;
-    }
+    .status { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #666; }
 
     .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #4ade80;
-      animation: pulse 2s infinite;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #4ade80; animation: pulse 2s infinite;
     }
 
     @keyframes pulse {
@@ -54,65 +39,138 @@
     }
 
     .filter-bar {
-      padding: 16px 24px;
-      display: flex;
-      gap: 8px;
-      border-bottom: 1px solid #1e2330;
-      flex-wrap: wrap;
+      padding: 16px 24px; display: flex; gap: 8px;
+      border-bottom: 1px solid #1e2330; flex-wrap: wrap;
     }
 
     .filter-btn {
-      background: #1e2330;
-      border: 1px solid #2a3040;
-      color: #888;
-      padding: 6px 14px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-      font-family: inherit;
-      transition: all 0.15s;
+      background: #1e2330; border: 1px solid #2a3040; color: #888;
+      padding: 6px 14px; border-radius: 4px; cursor: pointer;
+      font-size: 12px; font-family: inherit; transition: all 0.15s;
     }
 
     .filter-btn:hover { border-color: #4ade80; color: #fff; }
     .filter-btn.active { background: #1a2e1a; border-color: #4ade80; color: #4ade80; }
 
-    .signals-container {
-      padding: 24px;
-      max-width: 900px;
-    }
-
-    .signal-card {
+    /* Trade Panel */
+    .trade-panel {
+      margin: 16px 24px;
       background: #13161e;
       border: 1px solid #1e2330;
-      border-left: 3px solid transparent;
-      border-radius: 6px;
-      padding: 14px 18px;
-      margin-bottom: 8px;
-      cursor: pointer;
+      border-radius: 8px;
+      padding: 16px 20px;
+      max-width: 860px;
+      display: none;
+    }
+
+    .trade-panel.active { display: block; }
+    .trade-panel.long-active { border-left: 3px solid #4ade80; }
+    .trade-panel.short-active { border-left: 3px solid #f87171; }
+
+    .trade-panel-header {
       display: flex;
       align-items: center;
-      gap: 16px;
-      transition: all 0.15s;
+      justify-content: space-between;
+      margin-bottom: 14px;
     }
 
-    .signal-card:hover {
-      border-color: #2a3040;
-      background: #161920;
+    .trade-panel-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
+    .trade-close-btn {
+      background: none; border: none; color: #555;
+      cursor: pointer; font-size: 16px; padding: 2px 6px;
+    }
+
+    .trade-close-btn:hover { color: #f87171; }
+
+    .trade-inputs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .trade-input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .trade-input-label {
+      font-size: 10px;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .trade-input {
+      background: #0d0f14;
+      border: 1px solid #2a3040;
+      color: #e0e0e0;
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-family: inherit;
+      width: 140px;
+    }
+
+    .trade-input:focus { outline: none; border-color: #4ade80; }
+
+    .trade-pnl-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .trade-pnl-item {
+      background: #0d0f14;
+      border: 1px solid #1e2330;
+      border-radius: 4px;
+      padding: 10px 12px;
+    }
+
+    .trade-pnl-label {
+      font-size: 10px;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .trade-pnl-value {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .trade-pnl-value.profit { color: #4ade80; }
+    .trade-pnl-value.loss { color: #f87171; }
+    .trade-pnl-value.neutral { color: #888; }
+
+    .signals-container { padding: 24px; max-width: 900px; }
+
+    .signal-card {
+      background: #13161e; border: 1px solid #1e2330;
+      border-left: 3px solid transparent; border-radius: 6px;
+      padding: 14px 18px; margin-bottom: 8px; cursor: pointer;
+      display: flex; align-items: center; gap: 16px; transition: all 0.15s;
+    }
+
+    .signal-card:hover { border-color: #2a3040; background: #161920; }
     .signal-card.long { border-left-color: #4ade80; }
     .signal-card.short { border-left-color: #f87171; }
     .signal-card.long_exit  { border-left-color: #fbbf24; }
     .signal-card.short_exit { border-left-color: #fbbf24; }
 
     .signal-direction {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      padding: 3px 8px;
-      border-radius: 3px;
-      min-width: 52px;
-      text-align: center;
+      font-size: 11px; font-weight: 700; letter-spacing: 1px;
+      padding: 3px 8px; border-radius: 3px; min-width: 52px; text-align: center;
     }
 
     .long .signal-direction,
@@ -122,190 +180,77 @@
     .signal-direction.long_exit,
     .signal-direction.short_exit { background: #2a2510; color: #fbbf24; }
 
-    .signal-coin {
-      font-size: 15px;
-      font-weight: 700;
-      color: #fff;
-      min-width: 50px;
-    }
+    .signal-coin { font-size: 15px; font-weight: 700; color: #fff; min-width: 50px; }
+    .signal-time { font-size: 11px; color: #555; min-width: 130px; }
+    .signal-summary { font-size: 12px; color: #888; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .signal-price { font-size: 12px; color: #aaa; min-width: 80px; text-align: right; }
 
-    .signal-time {
-      font-size: 11px;
-      color: #555;
-      min-width: 130px;
-    }
-
-    .signal-summary {
-      font-size: 12px;
-      color: #888;
-      flex: 1;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .signal-price {
-      font-size: 12px;
-      color: #aaa;
-      min-width: 80px;
-      text-align: right;
-    }
-
-    .delete-btn {
-      color: #333;
-      cursor: pointer;
-      padding: 4px 8px;
-      border-radius: 3px;
-      font-size: 14px;
-    }
-
+    .delete-btn { color: #333; cursor: pointer; padding: 4px 8px; border-radius: 3px; font-size: 14px; }
     .delete-btn:hover { color: #f87171; background: #2e1a1a; }
 
-    /* Modal */
     .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7); z-index: 100;
+      align-items: center; justify-content: center;
     }
 
     .modal-overlay.active { display: flex; }
 
     .modal {
-      background: #13161e;
-      border: 1px solid #2a3040;
-      border-radius: 8px;
-      padding: 28px;
-      max-width: 560px;
-      width: 90%;
-      max-height: 80vh;
-      overflow-y: auto;
+      background: #13161e; border: 1px solid #2a3040;
+      border-radius: 8px; padding: 28px; max-width: 560px;
+      width: 90%; max-height: 80vh; overflow-y: auto;
     }
 
-    .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
-    }
-
-    .modal-title {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
+    .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .modal-title { display: flex; align-items: center; gap: 12px; }
     .modal-coin { font-size: 22px; font-weight: 700; color: #fff; }
     .modal-time { font-size: 12px; color: #555; margin-top: 2px; }
 
-    .close-btn {
-      background: none;
-      border: none;
-      color: #555;
-      cursor: pointer;
-      font-size: 20px;
-      padding: 4px 8px;
-    }
-
+    .close-btn { background: none; border: none; color: #555; cursor: pointer; font-size: 20px; padding: 4px 8px; }
     .close-btn:hover { color: #fff; }
 
-    .detail-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
 
-    .detail-item {
-      background: #0d0f14;
-      border: 1px solid #1e2330;
-      border-radius: 4px;
-      padding: 12px;
-    }
-
-    .detail-label {
-      font-size: 10px;
-      color: #555;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-bottom: 4px;
-    }
-
+    .detail-item { background: #0d0f14; border: 1px solid #1e2330; border-radius: 4px; padding: 12px; }
+    .detail-label { font-size: 10px; color: #555; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
     .detail-value { font-size: 14px; color: #e0e0e0; }
     .detail-value.bullish { color: #4ade80; }
     .detail-value.bearish { color: #f87171; }
     .detail-value.neutral { color: #fbbf24; }
 
-    .section-title {
-      font-size: 11px;
-      color: #555;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin: 16px 0 8px;
-    }
+    .section-title { font-size: 11px; color: #555; letter-spacing: 1px; text-transform: uppercase; margin: 16px 0 8px; }
 
-    .analysis-block {
-      background: #0d0f14;
-      border: 1px solid #1e2330;
-      border-radius: 4px;
-      padding: 14px;
-      font-size: 13px;
-      line-height: 1.8;
-    }
+    .analysis-block { background: #0d0f14; border: 1px solid #1e2330; border-radius: 4px; padding: 14px; font-size: 13px; line-height: 1.8; }
 
-    .analysis-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 6px;
-    }
-
-    .analysis-key {
-      color: #555;
-      min-width: 110px;
-      font-size: 11px;
-      text-transform: uppercase;
-      padding-top: 2px;
-    }
-
+    .analysis-row { display: flex; gap: 8px; margin-bottom: 6px; }
+    .analysis-key { color: #555; min-width: 110px; font-size: 11px; text-transform: uppercase; padding-top: 2px; }
     .analysis-val { color: #ccc; flex: 1; }
 
-    .strength-badge {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 3px;
-      font-size: 11px;
-      font-weight: 700;
-    }
-
+    .strength-badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 700; }
     .strength-stark { background: #1a2e1a; color: #4ade80; }
     .strength-mittel { background: #2a2a1a; color: #fbbf24; }
     .strength-schwach { background: #2e1a1a; color: #f87171; }
 
-    .empty {
-      text-align: center;
-      color: #333;
-      padding: 60px 24px;
-      font-size: 14px;
+    .activate-btn {
+      margin-top: 16px; width: 100%; padding: 10px;
+      background: #1a2e1a; border: 1px solid #4ade80;
+      color: #4ade80; border-radius: 4px; cursor: pointer;
+      font-size: 13px; font-family: inherit; font-weight: 700;
+      transition: all 0.15s;
     }
 
-    .loading {
-      text-align: center;
-      color: #333;
-      padding: 40px;
-    }
+    .activate-btn:hover { background: #4ade80; color: #000; }
+    .activate-btn.short-btn { background: #2e1a1a; border-color: #f87171; color: #f87171; }
+    .activate-btn.short-btn:hover { background: #f87171; color: #000; }
+
+    .empty { text-align: center; color: #333; padding: 60px 24px; font-size: 14px; }
+    .loading { text-align: center; color: #333; padding: 40px; }
 
     .refresh-btn {
-      background: #1e2330;
-      border: 1px solid #2a3040;
-      color: #888;
-      padding: 6px 14px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-      font-family: inherit;
+      background: #1e2330; border: 1px solid #2a3040; color: #888;
+      padding: 6px 14px; border-radius: 4px; cursor: pointer;
+      font-size: 12px; font-family: inherit;
     }
 
     .refresh-btn:hover { color: #fff; }
@@ -335,8 +280,51 @@
   <button class="filter-btn" onclick="setFilter('SUI')">SUI</button>
   <button class="filter-btn" onclick="setFilter('INJ')">INJ</button>
   <button class="filter-btn" onclick="setFilter('WLD')">WLD</button>
-  <button class="filter-btn" onclick="setFilter('TAO')">TAO</button>  <button class="filter-btn" onclick="setFilter('LONG')" style="margin-left:12px">LONG</button>
+  <button class="filter-btn" onclick="setFilter('TAO')">TAO</button>
+  <button class="filter-btn" onclick="setFilter('LONG')" style="margin-left:12px">LONG</button>
   <button class="filter-btn" onclick="setFilter('SHORT')">SHORT</button>
+</div>
+
+<!-- Trade Panel -->
+<div class="trade-panel" id="trade-panel">
+  <div class="trade-panel-header">
+    <div class="trade-panel-title">
+      <span id="tp-badge" class="signal-direction">–</span>
+      <span id="tp-coin">–</span>
+      <span style="color:#555;font-size:11px">AKTIVER TRADE</span>
+    </div>
+    <button class="trade-close-btn" onclick="closeTrade()">✕ Trade schließen</button>
+  </div>
+
+  <div class="trade-inputs">
+    <div class="trade-input-group">
+      <div class="trade-input-label">Mein Entry ($)</div>
+      <input type="number" class="trade-input" id="tp-entry" placeholder="z.B. 77650" oninput="calcPnL()">
+    </div>
+    <div class="trade-input-group">
+      <div class="trade-input-label">Position ($)</div>
+      <input type="number" class="trade-input" id="tp-position" placeholder="z.B. 1000" oninput="calcPnL()">
+    </div>
+  </div>
+
+  <div class="trade-pnl-grid">
+    <div class="trade-pnl-item">
+      <div class="trade-pnl-label">Signal Preis</div>
+      <div class="trade-pnl-value neutral" id="tp-signal-price">–</div>
+    </div>
+    <div class="trade-pnl-item">
+      <div class="trade-pnl-label">TP1 → PnL</div>
+      <div class="trade-pnl-value" id="tp-pnl-tp1">–</div>
+    </div>
+    <div class="trade-pnl-item">
+      <div class="trade-pnl-label">TP2 → PnL</div>
+      <div class="trade-pnl-value" id="tp-pnl-tp2">–</div>
+    </div>
+    <div class="trade-pnl-item">
+      <div class="trade-pnl-label">SL → PnL</div>
+      <div class="trade-pnl-value" id="tp-pnl-sl">–</div>
+    </div>
+  </div>
 </div>
 
 <div class="signals-container">
@@ -442,17 +430,27 @@
       </div>
     </div>
 
+    <button class="activate-btn" id="activate-btn" onclick="activateTrade()" style="display:none">
+      ▶ Trade aktivieren
+    </button>
+
   </div>
 </div>
 
 <script>
   let allSignals = [];
   let activeFilter = 'ALL';
+  let activeTrade = null;
 
   function formatTime(ts) {
     const d = new Date(ts);
     return d.toLocaleDateString('de-DE') + ' ' +
       d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function formatPnL(val) {
+    const sign = val >= 0 ? '+' : '';
+    return sign + val.toFixed(2).replace('.', ',') + ' $';
   }
 
   async function loadSignals() {
@@ -513,6 +511,10 @@
     const claude = a.claude || {};
     const grok = a.grok || {};
 
+    // Signal für Trade-Aktivierung merken
+    window._currentSignal = s;
+    window._currentClaude = claude;
+
     document.getElementById('modal-coin').textContent = s.coin;
     document.getElementById('modal-time').textContent = formatTime(s.created_at);
 
@@ -547,11 +549,95 @@
       document.getElementById('d-sl').textContent  = '$' + parseFloat(claude.sl).toLocaleString('de-DE');
       document.getElementById('d-rr').textContent  = claude.rr;
       document.getElementById('levels-block').style.display = 'block';
+
+      // Activate Button nur für LONG/SHORT
+      if (s.direction === 'LONG' || s.direction === 'SHORT') {
+        const btn = document.getElementById('activate-btn');
+        btn.style.display = 'block';
+        btn.className = s.direction === 'SHORT' ? 'activate-btn short-btn' : 'activate-btn';
+        btn.textContent = `▶ ${s.direction} Trade aktivieren`;
+      } else {
+        document.getElementById('activate-btn').style.display = 'none';
+      }
     } else {
       document.getElementById('levels-block').style.display = 'none';
+      document.getElementById('activate-btn').style.display = 'none';
     }
 
     document.getElementById('modal').classList.add('active');
+  }
+
+  function activateTrade() {
+    const s = window._currentSignal;
+    const claude = window._currentClaude;
+    if (!s || !claude) return;
+
+    activeTrade = {
+      coin: s.coin,
+      direction: s.direction,
+      signalPrice: parseFloat(s.price),
+      tp1: parseFloat(claude.tp1),
+      tp2: parseFloat(claude.tp2),
+      sl: parseFloat(claude.sl)
+    };
+
+    // Panel befüllen
+    const panel = document.getElementById('trade-panel');
+    panel.className = 'trade-panel active ' + (s.direction === 'SHORT' ? 'short-active' : 'long-active');
+
+    const badge = document.getElementById('tp-badge');
+    badge.textContent = s.direction;
+    badge.className = 'signal-direction ' + s.direction.toLowerCase();
+
+    document.getElementById('tp-coin').textContent = s.coin;
+    document.getElementById('tp-signal-price').textContent = '$' + parseFloat(s.price).toLocaleString('de-DE');
+
+    // Felder leeren
+    document.getElementById('tp-entry').value = '';
+    document.getElementById('tp-position').value = '';
+    document.getElementById('tp-pnl-tp1').textContent = '–';
+    document.getElementById('tp-pnl-tp2').textContent = '–';
+    document.getElementById('tp-pnl-sl').textContent = '–';
+
+    document.getElementById('modal').classList.remove('active');
+
+    // Scroll to panel
+    panel.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function calcPnL() {
+    if (!activeTrade) return;
+
+    const entry = parseFloat(document.getElementById('tp-entry').value);
+    const position = parseFloat(document.getElementById('tp-position').value);
+
+    if (!entry || !position || entry <= 0 || position <= 0) return;
+
+    const coins = position / entry;
+    const isLong = activeTrade.direction === 'LONG';
+    const mult = isLong ? 1 : -1;
+
+    const pnlTP1 = (activeTrade.tp1 - entry) * coins * mult;
+    const pnlTP2 = (activeTrade.tp2 - entry) * coins * mult;
+    const pnlSL  = (activeTrade.sl  - entry) * coins * mult;
+
+    const tp1El = document.getElementById('tp-pnl-tp1');
+    const tp2El = document.getElementById('tp-pnl-tp2');
+    const slEl  = document.getElementById('tp-pnl-sl');
+
+    tp1El.textContent = '$' + activeTrade.tp1.toLocaleString('de-DE') + ' → ' + formatPnL(pnlTP1);
+    tp1El.className = 'trade-pnl-value ' + (pnlTP1 >= 0 ? 'profit' : 'loss');
+
+    tp2El.textContent = '$' + activeTrade.tp2.toLocaleString('de-DE') + ' → ' + formatPnL(pnlTP2);
+    tp2El.className = 'trade-pnl-value ' + (pnlTP2 >= 0 ? 'profit' : 'loss');
+
+    slEl.textContent = '$' + activeTrade.sl.toLocaleString('de-DE') + ' → ' + formatPnL(pnlSL);
+    slEl.className = 'trade-pnl-value ' + (pnlSL >= 0 ? 'profit' : 'loss');
+  }
+
+  function closeTrade() {
+    activeTrade = null;
+    document.getElementById('trade-panel').className = 'trade-panel';
   }
 
   async function deleteSignal(e, id) {
