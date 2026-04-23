@@ -102,15 +102,8 @@
 
     .signal-card.long { border-left-color: #4ade80; }
     .signal-card.short { border-left-color: #f87171; }
-
-    .delete-btn {
-  color: #333;
-  cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 3px;
-  font-size: 14px;
-}
-.delete-btn:hover { color: #f87171; background: #2e1a1a; }
+    .signal-card.long_exit  { border-left-color: #fbbf24; }
+    .signal-card.short_exit { border-left-color: #fbbf24; }
 
     .signal-direction {
       font-size: 11px;
@@ -122,8 +115,12 @@
       text-align: center;
     }
 
-    .long .signal-direction { background: #1a2e1a; color: #4ade80; }
-    .short .signal-direction { background: #2e1a1a; color: #f87171; }
+    .long .signal-direction,
+    .signal-direction.long { background: #1a2e1a; color: #4ade80; }
+    .short .signal-direction,
+    .signal-direction.short { background: #2e1a1a; color: #f87171; }
+    .signal-direction.long_exit,
+    .signal-direction.short_exit { background: #2a2510; color: #fbbf24; }
 
     .signal-coin {
       font-size: 15px;
@@ -154,10 +151,15 @@
       text-align: right;
     }
 
-    .arrow {
+    .delete-btn {
       color: #333;
-      font-size: 12px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 3px;
+      font-size: 14px;
     }
+
+    .delete-btn:hover { color: #f87171; background: #2e1a1a; }
 
     /* Modal */
     .modal-overlay {
@@ -232,11 +234,7 @@
       margin-bottom: 4px;
     }
 
-    .detail-value {
-      font-size: 14px;
-      color: #e0e0e0;
-    }
-
+    .detail-value { font-size: 14px; color: #e0e0e0; }
     .detail-value.bullish { color: #4ade80; }
     .detail-value.bearish { color: #f87171; }
     .detail-value.neutral { color: #fbbf24; }
@@ -334,10 +332,10 @@
   <button class="filter-btn" onclick="setFilter('LINK')">LINK</button>
   <button class="filter-btn" onclick="setFilter('AVAX')">AVAX</button>
   <button class="filter-btn" onclick="setFilter('HYPE')">HYPE</button>
-<button class="filter-btn" onclick="setFilter('SUI')">SUI</button>
-<button class="filter-btn" onclick="setFilter('INJ')">INJ</button>
-<button class="filter-btn" onclick="setFilter('WLD')">WLD</button>
-<button class="filter-btn" onclick="setFilter('PENDLE')">PENDLE</button>
+  <button class="filter-btn" onclick="setFilter('SUI')">SUI</button>
+  <button class="filter-btn" onclick="setFilter('INJ')">INJ</button>
+  <button class="filter-btn" onclick="setFilter('WLD')">WLD</button>
+  <button class="filter-btn" onclick="setFilter('PENDLE')">PENDLE</button>
   <button class="filter-btn" onclick="setFilter('LONG')" style="margin-left:12px">LONG</button>
   <button class="filter-btn" onclick="setFilter('SHORT')">SHORT</button>
 </div>
@@ -422,6 +420,29 @@
         <span class="analysis-val" id="d-invalid">–</span>
       </div>
     </div>
+
+    <div id="levels-block" style="display:none">
+      <div class="section-title">Levels</div>
+      <div class="detail-grid">
+        <div class="detail-item">
+          <div class="detail-label">TP1</div>
+          <div class="detail-value bullish" id="d-tp1">–</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">TP2</div>
+          <div class="detail-value bullish" id="d-tp2">–</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">SL</div>
+          <div class="detail-value bearish" id="d-sl">–</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Risk/Reward</div>
+          <div class="detail-value" id="d-rr">–</div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -469,16 +490,21 @@
       return;
     }
 
-    list.innerHTML = filtered.map(s => `
-      <div class="signal-card ${s.direction.toLowerCase()}" onclick="openModal(${s.id})">
-        <span class="signal-direction">${s.direction}</span>
-        <span class="signal-coin">${s.coin}</span>
-        <span class="signal-time">${formatTime(s.created_at)}</span>
-        <span class="signal-summary">${s.summary || '–'}</span>
-        <span class="signal-price">$${parseFloat(s.price).toLocaleString('de-DE')}</span>
-        <span class="delete-btn" onclick="deleteSignal(event, ${s.id})">✕</span>
-      </div>
-    `).join('');
+    list.innerHTML = filtered.map(s => {
+      const dir = s.direction.toLowerCase();
+      const label = s.direction === 'LONG_EXIT' ? '🟡 EXIT L' :
+                    s.direction === 'SHORT_EXIT' ? '🟡 EXIT S' :
+                    s.direction;
+      return `
+        <div class="signal-card ${dir}" onclick="openModal(${s.id})">
+          <span class="signal-direction ${dir}">${label}</span>
+          <span class="signal-coin">${s.coin}</span>
+          <span class="signal-time">${formatTime(s.created_at)}</span>
+          <span class="signal-summary">${s.summary || '–'}</span>
+          <span class="signal-price">$${parseFloat(s.price).toLocaleString('de-DE')}</span>
+          <span class="delete-btn" onclick="deleteSignal(event, ${s.id})">✕</span>
+        </div>`;
+    }).join('');
   }
 
   async function openModal(id) {
@@ -516,7 +542,24 @@
     document.getElementById('d-entry').textContent = claude.entry_note || '–';
     document.getElementById('d-invalid').textContent = claude.invalidation || '–';
 
+    if (claude.tp1 && claude.tp1 !== '-') {
+      document.getElementById('d-tp1').textContent = '$' + parseFloat(claude.tp1).toLocaleString('de-DE');
+      document.getElementById('d-tp2').textContent = '$' + parseFloat(claude.tp2).toLocaleString('de-DE');
+      document.getElementById('d-sl').textContent  = '$' + parseFloat(claude.sl).toLocaleString('de-DE');
+      document.getElementById('d-rr').textContent  = claude.rr;
+      document.getElementById('levels-block').style.display = 'block';
+    } else {
+      document.getElementById('levels-block').style.display = 'none';
+    }
+
     document.getElementById('modal').classList.add('active');
+  }
+
+  async function deleteSignal(e, id) {
+    e.stopPropagation();
+    if (!confirm('Signal löschen?')) return;
+    await fetch(`/api/signals/${id}`, { method: 'DELETE' });
+    loadSignals();
   }
 
   function closeModal(e) {
@@ -525,13 +568,6 @@
     }
   }
 
-  // Auto-refresh alle 60 Sekunden
-  async function deleteSignal(e, id) {
-  e.stopPropagation();
-  if (!confirm('Signal löschen?')) return;
-  await fetch(`/api/signals/${id}`, { method: 'DELETE' });
-  loadSignals();
-}
   loadSignals();
   setInterval(loadSignals, 60000);
 </script>
