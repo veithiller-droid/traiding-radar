@@ -50,6 +50,11 @@ async function initDB() {
 
     CREATE INDEX IF NOT EXISTS idx_trades_status ON trades(status);
     CREATE INDEX IF NOT EXISTS idx_trades_coin ON trades(coin);
+
+    ALTER TABLE trades ADD COLUMN IF NOT EXISTS exit_price NUMERIC;
+    ALTER TABLE trades ADD COLUMN IF NOT EXISTS pnl_dollar NUMERIC;
+    ALTER TABLE trades ADD COLUMN IF NOT EXISTS pnl_percent NUMERIC;
+    ALTER TABLE trades ADD COLUMN IF NOT EXISTS result VARCHAR(10);
   `);
   console.log('DB initialized');
 }
