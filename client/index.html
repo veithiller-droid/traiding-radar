@@ -15,55 +15,20 @@
     .dot { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; animation: pulse 2s infinite; }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
+    .tab-bar { display: flex; border-bottom: 1px solid #1e2330; background: #13161e; }
+    .tab-btn { padding: 12px 24px; background: none; border: none; color: #555; cursor: pointer; font-size: 13px; font-family: inherit; border-bottom: 2px solid transparent; transition: all 0.15s; }
+    .tab-btn:hover { color: #888; }
+    .tab-btn.active { color: #4ade80; border-bottom-color: #4ade80; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
     .filter-bar { padding: 16px 24px; display: flex; gap: 8px; border-bottom: 1px solid #1e2330; flex-wrap: wrap; }
     .filter-btn { background: #1e2330; border: 1px solid #2a3040; color: #888; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 12px; font-family: inherit; transition: all 0.15s; }
     .filter-btn:hover { border-color: #4ade80; color: #fff; }
     .filter-btn.active { background: #1a2e1a; border-color: #4ade80; color: #4ade80; }
 
-    .trades-section { padding: 16px 24px 0; max-width: 900px; }
-    .trades-title { font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+    .container { padding: 24px; max-width: 900px; }
 
-    .trade-card { background: #13161e; border: 1px solid #1e2330; border-radius: 8px; padding: 14px 18px; margin-bottom: 8px; }
-    .trade-card.long-active { border-left: 3px solid #4ade80; }
-    .trade-card.short-active { border-left: 3px solid #f87171; }
-
-    .trade-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
-    .trade-card-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-    .trade-card-coin { font-size: 15px; font-weight: 700; color: #fff; }
-    .trade-card-time { font-size: 11px; color: #555; }
-
-    .trade-card-inputs { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; align-items: flex-end; }
-    .trade-input-group { display: flex; flex-direction: column; gap: 3px; }
-    .trade-input-label { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; }
-    .trade-input { background: #0d0f14; border: 1px solid #2a3040; color: #e0e0e0; padding: 5px 8px; border-radius: 4px; font-size: 12px; font-family: inherit; width: 120px; }
-    .trade-input:focus { outline: none; border-color: #4ade80; }
-
-    .save-btn { background: #1e2330; border: 1px solid #2a3040; color: #888; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; font-family: inherit; }
-    .save-btn:hover { border-color: #4ade80; color: #4ade80; }
-
-    .trade-pnl-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px; }
-    .trade-pnl-item { background: #0d0f14; border: 1px solid #1e2330; border-radius: 4px; padding: 8px 10px; }
-    .trade-pnl-label { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
-    .trade-pnl-value { font-size: 12px; font-weight: 700; }
-    .trade-pnl-value.profit { color: #4ade80; }
-    .trade-pnl-value.loss { color: #f87171; }
-    .trade-pnl-value.neutral { color: #888; }
-
-    .exit-section { display: none; background: #0d0f14; border: 1px solid #2a3040; border-radius: 4px; padding: 12px; margin-bottom: 8px; }
-    .exit-section.visible { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
-    .exit-section .trade-input-label { color: #fbbf24; }
-
-    .exit-confirm-btn { background: #2e1a1a; border: 1px solid #f87171; color: #f87171; padding: 5px 14px; border-radius: 4px; cursor: pointer; font-size: 11px; font-family: inherit; font-weight: 700; }
-    .exit-confirm-btn:hover { background: #f87171; color: #000; }
-
-    .exit-cancel-btn { background: none; border: 1px solid #333; color: #555; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-family: inherit; }
-    .exit-cancel-btn:hover { color: #888; }
-
-    .trade-footer { display: flex; justify-content: flex-end; }
-    .trade-close-trigger { background: none; border: 1px solid #333; color: #555; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-family: inherit; }
-    .trade-close-trigger:hover { border-color: #f87171; color: #f87171; }
-
-    .signals-container { padding: 24px; max-width: 900px; }
     .signal-card { background: #13161e; border: 1px solid #1e2330; border-left: 3px solid transparent; border-radius: 6px; padding: 14px 18px; margin-bottom: 8px; cursor: pointer; display: flex; align-items: center; gap: 16px; transition: all 0.15s; }
     .signal-card:hover { border-color: #2a3040; background: #161920; }
     .signal-card.long { border-left-color: #4ade80; }
@@ -82,6 +47,56 @@
     .signal-price { font-size: 12px; color: #aaa; min-width: 80px; text-align: right; }
     .delete-btn { color: #333; cursor: pointer; padding: 4px 8px; border-radius: 3px; font-size: 14px; }
     .delete-btn:hover { color: #f87171; background: #2e1a1a; }
+
+    .section-label { font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+
+    .trade-card { background: #13161e; border: 1px solid #1e2330; border-radius: 8px; padding: 14px 18px; margin-bottom: 8px; }
+    .trade-card.long-active { border-left: 3px solid #4ade80; }
+    .trade-card.short-active { border-left: 3px solid #f87171; }
+    .trade-card.win { border-left: 3px solid #4ade80; }
+    .trade-card.loss { border-left: 3px solid #f87171; }
+    .trade-card.breakeven { border-left: 3px solid #fbbf24; }
+
+    .trade-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+    .trade-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .trade-coin { font-size: 15px; font-weight: 700; color: #fff; }
+    .trade-time { font-size: 11px; color: #555; }
+
+    .trade-inputs { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; align-items: flex-end; }
+    .input-group { display: flex; flex-direction: column; gap: 3px; }
+    .input-label { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; }
+    .trade-input { background: #0d0f14; border: 1px solid #2a3040; color: #e0e0e0; padding: 5px 8px; border-radius: 4px; font-size: 12px; font-family: inherit; width: 120px; }
+    .trade-input:focus { outline: none; border-color: #4ade80; }
+
+    .save-btn { background: #1e2330; border: 1px solid #2a3040; color: #888; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; font-family: inherit; }
+    .save-btn:hover { border-color: #4ade80; color: #4ade80; }
+
+    .pnl-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px; }
+    .pnl-item { background: #0d0f14; border: 1px solid #1e2330; border-radius: 4px; padding: 8px 10px; }
+    .pnl-label { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
+    .pnl-value { font-size: 12px; font-weight: 700; }
+    .pnl-value.profit { color: #4ade80; }
+    .pnl-value.loss { color: #f87171; }
+    .pnl-value.neutral { color: #888; }
+
+    .exit-section { display: none; background: #0d0f14; border: 1px solid #2a3040; border-radius: 4px; padding: 12px; margin-bottom: 8px; }
+    .exit-section.visible { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
+    .exit-confirm-btn { background: #2e1a1a; border: 1px solid #f87171; color: #f87171; padding: 5px 14px; border-radius: 4px; cursor: pointer; font-size: 11px; font-family: inherit; font-weight: 700; }
+    .exit-confirm-btn:hover { background: #f87171; color: #000; }
+    .exit-cancel-btn { background: none; border: 1px solid #333; color: #555; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-family: inherit; }
+    .exit-cancel-btn:hover { color: #888; }
+    .trade-footer { display: flex; justify-content: flex-end; }
+    .end-trade-btn { background: none; border: 1px solid #333; color: #555; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-family: inherit; }
+    .end-trade-btn:hover { border-color: #f87171; color: #f87171; }
+
+    .history-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+    .history-item { background: #0d0f14; border: 1px solid #1e2330; border-radius: 4px; padding: 8px 10px; }
+    .result-badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 700; }
+    .result-WIN { background: #1a2e1a; color: #4ade80; }
+    .result-LOSS { background: #2e1a1a; color: #f87171; }
+    .result-BREAKEVEN { background: #2a2510; color: #fbbf24; }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
 
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; }
     .modal-overlay.active { display: flex; }
@@ -111,7 +126,7 @@
     .activate-btn:hover { background: #4ade80; color: #000; }
     .activate-btn.short-btn { background: #2e1a1a; border-color: #f87171; color: #f87171; }
     .activate-btn.short-btn:hover { background: #f87171; color: #000; }
-    .empty { text-align: center; color: #333; padding: 60px 24px; font-size: 14px; }
+    .empty { text-align: center; color: #333; padding: 40px 24px; font-size: 14px; }
     .loading { text-align: center; color: #333; padding: 40px; }
     .refresh-btn { background: #1e2330; border: 1px solid #2a3040; color: #888; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 12px; font-family: inherit; }
     .refresh-btn:hover { color: #fff; }
@@ -122,38 +137,56 @@
 <header>
   <div class="logo">TRADING<span>RADAR</span></div>
   <div style="display:flex;gap:12px;align-items:center">
-    <button class="refresh-btn" onclick="loadSignals()">↻ Refresh</button>
+    <button class="refresh-btn" onclick="loadAll()">↻ Refresh</button>
     <div class="status"><div class="dot"></div><span id="last-update">–</span></div>
   </div>
 </header>
 
-<div class="filter-bar">
-  <button class="filter-btn active" onclick="setFilter('ALL')">ALL</button>
-  <button class="filter-btn" onclick="setFilter('BTC')">BTC</button>
-  <button class="filter-btn" onclick="setFilter('ETH')">ETH</button>
-  <button class="filter-btn" onclick="setFilter('SOL')">SOL</button>
-  <button class="filter-btn" onclick="setFilter('LINK')">LINK</button>
-  <button class="filter-btn" onclick="setFilter('AVAX')">AVAX</button>
-  <button class="filter-btn" onclick="setFilter('HYPE')">HYPE</button>
-  <button class="filter-btn" onclick="setFilter('SUI')">SUI</button>
-  <button class="filter-btn" onclick="setFilter('INJ')">INJ</button>
-  <button class="filter-btn" onclick="setFilter('WLD')">WLD</button>
-  <button class="filter-btn" onclick="setFilter('TAO')">TAO</button>
-  <button class="filter-btn" onclick="setFilter('LONG')" style="margin-left:12px">LONG</button>
-  <button class="filter-btn" onclick="setFilter('SHORT')">SHORT</button>
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('signals', this)">📡 Signals</button>
+  <button class="tab-btn" onclick="switchTab('active', this)">📊 Aktive Trades</button>
+  <button class="tab-btn" onclick="switchTab('history', this)">📈 History</button>
 </div>
 
-<div class="trades-section">
-  <div id="active-trades-container"></div>
+<!-- SIGNALS -->
+<div class="tab-content active" id="tab-signals">
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="setFilter('ALL', this)">ALL</button>
+    <button class="filter-btn" onclick="setFilter('BTC', this)">BTC</button>
+    <button class="filter-btn" onclick="setFilter('ETH', this)">ETH</button>
+    <button class="filter-btn" onclick="setFilter('SOL', this)">SOL</button>
+    <button class="filter-btn" onclick="setFilter('LINK', this)">LINK</button>
+    <button class="filter-btn" onclick="setFilter('AVAX', this)">AVAX</button>
+    <button class="filter-btn" onclick="setFilter('HYPE', this)">HYPE</button>
+    <button class="filter-btn" onclick="setFilter('SUI', this)">SUI</button>
+    <button class="filter-btn" onclick="setFilter('INJ', this)">INJ</button>
+    <button class="filter-btn" onclick="setFilter('WLD', this)">WLD</button>
+    <button class="filter-btn" onclick="setFilter('TAO', this)">TAO</button>
+    <button class="filter-btn" onclick="setFilter('LONG', this)" style="margin-left:12px">LONG</button>
+    <button class="filter-btn" onclick="setFilter('SHORT', this)">SHORT</button>
+  </div>
+  <div class="container">
+    <div id="signals-list"><div class="loading">Lade Signals...</div></div>
+  </div>
 </div>
 
-<div class="signals-container">
-  <div id="signals-list"><div class="loading">Lade Signals...</div></div>
+<!-- AKTIVE TRADES -->
+<div class="tab-content" id="tab-active">
+  <div class="container">
+    <div id="active-trades-list"><div class="loading">Lade Trades...</div></div>
+  </div>
+</div>
+
+<!-- HISTORY -->
+<div class="tab-content" id="tab-history">
+  <div class="container">
+    <div id="history-list"><div class="loading">Lade History...</div></div>
+  </div>
 </div>
 
 <!-- Modal -->
 <div class="modal-overlay" id="modal" onclick="closeModal(event)">
-  <div class="modal" id="modal-content">
+  <div class="modal">
     <div class="modal-header">
       <div class="modal-title">
         <div>
@@ -210,160 +243,25 @@
 
   function formatPnL(val) {
     const sign = val >= 0 ? '+' : '';
-    return sign + val.toFixed(2).replace('.', ',') + ' $';
+    return sign + parseFloat(val).toFixed(2).replace('.', ',') + ' $';
   }
 
-  function calcTradePnL(id) {
-    const trade = activeTrades[id];
-    if (!trade) return;
-    const entry = parseFloat(document.getElementById('tp-entry-' + id).value);
-    const position = parseFloat(document.getElementById('tp-pos-' + id).value);
-    if (!entry || !position || entry <= 0 || position <= 0) return;
-
-    const coins = position / entry;
-    const isLong = trade.direction === 'LONG';
-    const mult = isLong ? 1 : -1;
-
-    const pnlTP1 = (parseFloat(trade.tp1) - entry) * coins * mult;
-    const pnlTP2 = (parseFloat(trade.tp2) - entry) * coins * mult;
-    const pnlSL  = (parseFloat(trade.sl)  - entry) * coins * mult;
-
-    const tp1El = document.getElementById('pnl-tp1-' + id);
-    const tp2El = document.getElementById('pnl-tp2-' + id);
-    const slEl  = document.getElementById('pnl-sl-' + id);
-
-    tp1El.textContent = '$' + parseFloat(trade.tp1).toLocaleString('de-DE') + ' → ' + formatPnL(pnlTP1);
-    tp1El.className = 'trade-pnl-value ' + (pnlTP1 >= 0 ? 'profit' : 'loss');
-    tp2El.textContent = '$' + parseFloat(trade.tp2).toLocaleString('de-DE') + ' → ' + formatPnL(pnlTP2);
-    tp2El.className = 'trade-pnl-value ' + (pnlTP2 >= 0 ? 'profit' : 'loss');
-    slEl.textContent = '$' + parseFloat(trade.sl).toLocaleString('de-DE') + ' → ' + formatPnL(pnlSL);
-    slEl.className = 'trade-pnl-value ' + (pnlSL >= 0 ? 'profit' : 'loss');
+  function switchTab(tab, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + tab).classList.add('active');
+    if (tab === 'active') loadActiveTrades();
+    if (tab === 'history') loadHistory();
   }
 
-  async function saveTradeInputs(id) {
-    const entry = parseFloat(document.getElementById('tp-entry-' + id).value);
-    const position = parseFloat(document.getElementById('tp-pos-' + id).value);
-    if (!entry || !position) return;
-    await fetch('/api/trades/' + id + '/update', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ entry_price: entry, position_size: position })
-    });
-    activeTrades[id].entry_price = entry;
-    activeTrades[id].position_size = position;
-  }
+  // ── SIGNALS ──────────────────────────────────────
 
-  function showExitSection(id) {
-    document.getElementById('exit-section-' + id).className = 'exit-section visible';
-    document.getElementById('exit-trigger-' + id).style.display = 'none';
-  }
-
-  function hideExitSection(id) {
-    document.getElementById('exit-section-' + id).className = 'exit-section';
-    document.getElementById('exit-trigger-' + id).style.display = 'block';
-  }
-
-  async function confirmClose(id) {
-    const exitPrice = parseFloat(document.getElementById('exit-price-' + id).value);
-    const res = await fetch('/api/trades/' + id + '/close', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ exit_price: exitPrice || null })
-    });
-    const data = await res.json();
-
-    // PnL anzeigen bevor Trade verschwindet
-    if (data.pnl_dollar !== null) {
-      const pnl = data.pnl_dollar;
-      const color = pnl >= 0 ? '#4ade80' : '#f87171';
-      const result = data.result;
-      alert(`Trade geschlossen: ${result}\nPnL: ${pnl >= 0 ? '+' : ''}${pnl.toFixed(2)} $`);
-    }
-
-    delete activeTrades[id];
-    renderActiveTrades();
-  }
-
-  function renderActiveTrades() {
-    const container = document.getElementById('active-trades-container');
-    const trades = Object.values(activeTrades);
-    if (trades.length === 0) { container.innerHTML = ''; return; }
-
-    container.innerHTML = '<div class="trades-title">Aktive Trades (' + trades.length + ')</div>' +
-      trades.map(t => `
-        <div class="trade-card ${t.direction === 'SHORT' ? 'short-active' : 'long-active'}">
-          <div class="trade-card-header">
-            <div class="trade-card-left">
-              <span class="signal-direction ${t.direction.toLowerCase()}">${t.direction}</span>
-              <span class="trade-card-coin">${t.coin}</span>
-              <span class="trade-card-time">${formatTime(t.created_at)}</span>
-              <span class="trade-card-time" style="color:#444">Signal: $${parseFloat(t.signal_price).toLocaleString('de-DE')}</span>
-            </div>
-          </div>
-
-          <div class="trade-card-inputs">
-            <div class="trade-input-group">
-              <div class="trade-input-label">Mein Entry ($)</div>
-              <input type="number" class="trade-input" id="tp-entry-${t.id}"
-                value="${t.entry_price || ''}" placeholder="z.B. 247.12"
-                oninput="calcTradePnL(${t.id})">
-            </div>
-            <div class="trade-input-group">
-              <div class="trade-input-label">Position ($)</div>
-              <input type="number" class="trade-input" id="tp-pos-${t.id}"
-                value="${t.position_size || ''}" placeholder="z.B. 100"
-                oninput="calcTradePnL(${t.id})">
-            </div>
-            <button class="save-btn" onclick="saveTradeInputs(${t.id})">💾 Speichern</button>
-          </div>
-
-          <div class="trade-pnl-grid">
-            <div class="trade-pnl-item">
-              <div class="trade-pnl-label">Signal Preis</div>
-              <div class="trade-pnl-value neutral">$${parseFloat(t.signal_price).toLocaleString('de-DE')}</div>
-            </div>
-            <div class="trade-pnl-item">
-              <div class="trade-pnl-label">TP1 → PnL</div>
-              <div class="trade-pnl-value neutral" id="pnl-tp1-${t.id}">$${parseFloat(t.tp1).toLocaleString('de-DE')}</div>
-            </div>
-            <div class="trade-pnl-item">
-              <div class="trade-pnl-label">TP2 → PnL</div>
-              <div class="trade-pnl-value neutral" id="pnl-tp2-${t.id}">$${parseFloat(t.tp2).toLocaleString('de-DE')}</div>
-            </div>
-            <div class="trade-pnl-item">
-              <div class="trade-pnl-label">SL → PnL</div>
-              <div class="trade-pnl-value neutral" id="pnl-sl-${t.id}">$${parseFloat(t.sl).toLocaleString('de-DE')}</div>
-            </div>
-          </div>
-
-          <div class="exit-section" id="exit-section-${t.id}">
-            <div class="trade-input-group">
-              <div class="trade-input-label" style="color:#fbbf24">Exit Preis ($)</div>
-              <input type="number" class="trade-input" id="exit-price-${t.id}" placeholder="z.B. 249.50">
-            </div>
-            <button class="exit-confirm-btn" onclick="confirmClose(${t.id})">✓ Trade schließen</button>
-            <button class="exit-cancel-btn" onclick="hideExitSection(${t.id})">Abbrechen</button>
-          </div>
-
-          <div class="trade-footer">
-            <button class="trade-close-trigger" id="exit-trigger-${t.id}" onclick="showExitSection(${t.id})">✕ Trade beenden</button>
-          </div>
-        </div>
-      `).join('');
-
-    trades.forEach(t => {
-      if (t.entry_price && t.position_size) calcTradePnL(t.id);
-    });
-  }
-
-  async function loadActiveTrades() {
-    try {
-      const res = await fetch('/api/trades/active');
-      const trades = await res.json();
-      activeTrades = {};
-      trades.forEach(t => activeTrades[t.id] = t);
-      renderActiveTrades();
-    } catch (err) { console.log('No active trades'); }
+  function setFilter(f, btn) {
+    activeFilter = f;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderSignals();
   }
 
   async function loadSignals() {
@@ -377,13 +275,6 @@
     }
   }
 
-  function setFilter(f) {
-    activeFilter = f;
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    event.target.classList.add('active');
-    renderSignals();
-  }
-
   function renderSignals() {
     const list = document.getElementById('signals-list');
     let filtered = allSignals;
@@ -392,10 +283,7 @@
     } else if (activeFilter === 'LONG' || activeFilter === 'SHORT') {
       filtered = allSignals.filter(s => s.direction === activeFilter);
     }
-    if (filtered.length === 0) {
-      list.innerHTML = '<div class="empty">Noch keine Signals – warte auf TradingView Alert</div>';
-      return;
-    }
+    if (filtered.length === 0) { list.innerHTML = '<div class="empty">Keine Signals</div>'; return; }
     list.innerHTML = filtered.map(s => {
       const dir = s.direction.toLowerCase();
       const label = s.direction === 'LONG_EXIT' ? '🟡 EXIT L' : s.direction === 'SHORT_EXIT' ? '🟡 EXIT S' : s.direction;
@@ -410,12 +298,186 @@
     }).join('');
   }
 
+  async function deleteSignal(e, id) {
+    e.stopPropagation();
+    if (!confirm('Signal löschen?')) return;
+    await fetch('/api/signals/' + id, { method: 'DELETE' });
+    loadSignals();
+  }
+
+  // ── AKTIVE TRADES ────────────────────────────────
+
+  async function loadActiveTrades() {
+    try {
+      const res = await fetch('/api/trades/active');
+      const trades = await res.json();
+      activeTrades = {};
+      trades.forEach(t => activeTrades[t.id] = t);
+      renderActiveTrades();
+    } catch (err) { console.error(err); }
+  }
+
+  function calcPnL(id) {
+    const t = activeTrades[id];
+    if (!t) return;
+    const entry = parseFloat(document.getElementById('tp-entry-' + id).value);
+    const pos = parseFloat(document.getElementById('tp-pos-' + id).value);
+    if (!entry || !pos) return;
+    const coins = pos / entry;
+    const mult = t.direction === 'LONG' ? 1 : -1;
+    const pnl1 = (parseFloat(t.tp1) - entry) * coins * mult;
+    const pnl2 = (parseFloat(t.tp2) - entry) * coins * mult;
+    const pnlS = (parseFloat(t.sl)  - entry) * coins * mult;
+    const set = (id, val, price) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = '$' + parseFloat(price).toLocaleString('de-DE') + ' → ' + formatPnL(val);
+      el.className = 'pnl-value ' + (val >= 0 ? 'profit' : 'loss');
+    };
+    set('pnl1-' + id, pnl1, t.tp1);
+    set('pnl2-' + id, pnl2, t.tp2);
+    set('pnlS-' + id, pnlS, t.sl);
+  }
+
+  async function saveInputs(id) {
+    const entry = parseFloat(document.getElementById('tp-entry-' + id).value);
+    const pos = parseFloat(document.getElementById('tp-pos-' + id).value);
+    if (!entry || !pos) return;
+    await fetch('/api/trades/' + id + '/update', {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ entry_price: entry, position_size: pos })
+    });
+    activeTrades[id].entry_price = entry;
+    activeTrades[id].position_size = pos;
+  }
+
+  function showExit(id) {
+    document.getElementById('exit-' + id).className = 'exit-section visible';
+    document.getElementById('endBtn-' + id).style.display = 'none';
+  }
+
+  function hideExit(id) {
+    document.getElementById('exit-' + id).className = 'exit-section';
+    document.getElementById('endBtn-' + id).style.display = 'block';
+  }
+
+  async function confirmClose(id) {
+    const exitPrice = parseFloat(document.getElementById('exitPrice-' + id).value);
+    const res = await fetch('/api/trades/' + id + '/close', {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ exit_price: exitPrice || null })
+    });
+    const data = await res.json();
+    if (data.pnl_dollar !== null && data.pnl_dollar !== undefined) {
+      alert('Trade geschlossen: ' + data.result + '\nPnL: ' + (data.pnl_dollar >= 0 ? '+' : '') + parseFloat(data.pnl_dollar).toFixed(2) + ' $');
+    }
+    delete activeTrades[id];
+    renderActiveTrades();
+  }
+
+  function renderActiveTrades() {
+    const el = document.getElementById('active-trades-list');
+    const trades = Object.values(activeTrades);
+    if (trades.length === 0) { el.innerHTML = '<div class="empty">Keine aktiven Trades</div>'; return; }
+    el.innerHTML = '<div class="section-label">Aktive Trades (' + trades.length + ')</div>' +
+      trades.map(t => `
+        <div class="trade-card ${t.direction === 'SHORT' ? 'short-active' : 'long-active'}">
+          <div class="trade-header">
+            <div class="trade-left">
+              <span class="signal-direction ${t.direction.toLowerCase()}">${t.direction}</span>
+              <span class="trade-coin">${t.coin}</span>
+              <span class="trade-time">${formatTime(t.created_at)}</span>
+              <span class="trade-time" style="color:#444">Signal: $${parseFloat(t.signal_price).toLocaleString('de-DE')}</span>
+            </div>
+          </div>
+          <div class="trade-inputs">
+            <div class="input-group">
+              <div class="input-label">Mein Entry ($)</div>
+              <input type="number" class="trade-input" id="tp-entry-${t.id}" value="${t.entry_price || ''}" placeholder="Entry" oninput="calcPnL(${t.id})">
+            </div>
+            <div class="input-group">
+              <div class="input-label">Position ($)</div>
+              <input type="number" class="trade-input" id="tp-pos-${t.id}" value="${t.position_size || ''}" placeholder="Position" oninput="calcPnL(${t.id})">
+            </div>
+            <button class="save-btn" onclick="saveInputs(${t.id})">💾 Speichern</button>
+          </div>
+          <div class="pnl-grid">
+            <div class="pnl-item"><div class="pnl-label">Signal Preis</div><div class="pnl-value neutral">$${parseFloat(t.signal_price).toLocaleString('de-DE')}</div></div>
+            <div class="pnl-item"><div class="pnl-label">TP1 → PnL</div><div class="pnl-value neutral" id="pnl1-${t.id}">$${parseFloat(t.tp1).toLocaleString('de-DE')}</div></div>
+            <div class="pnl-item"><div class="pnl-label">TP2 → PnL</div><div class="pnl-value neutral" id="pnl2-${t.id}">$${parseFloat(t.tp2).toLocaleString('de-DE')}</div></div>
+            <div class="pnl-item"><div class="pnl-label">SL → PnL</div><div class="pnl-value neutral" id="pnlS-${t.id}">$${parseFloat(t.sl).toLocaleString('de-DE')}</div></div>
+          </div>
+          <div class="exit-section" id="exit-${t.id}">
+            <div class="input-group">
+              <div class="input-label" style="color:#fbbf24">Exit Preis ($)</div>
+              <input type="number" class="trade-input" id="exitPrice-${t.id}" placeholder="z.B. 249.50">
+            </div>
+            <button class="exit-confirm-btn" onclick="confirmClose(${t.id})">✓ Bestätigen</button>
+            <button class="exit-cancel-btn" onclick="hideExit(${t.id})">Abbrechen</button>
+          </div>
+          <div class="trade-footer">
+            <button class="end-trade-btn" id="endBtn-${t.id}" onclick="showExit(${t.id})">✕ Trade beenden</button>
+          </div>
+        </div>
+      `).join('');
+    trades.forEach(t => { if (t.entry_price && t.position_size) calcPnL(t.id); });
+  }
+
+  // ── HISTORY ──────────────────────────────────────
+
+  async function loadHistory() {
+    try {
+      const res = await fetch('/api/trades/history');
+      const trades = await res.json();
+      renderHistory(trades);
+    } catch (err) { console.error(err); }
+  }
+
+  function renderHistory(trades) {
+    const el = document.getElementById('history-list');
+    if (!trades || trades.length === 0) {
+      el.innerHTML = '<div class="empty">Noch keine abgeschlossenen Trades</div>';
+      return;
+    }
+    const wins = trades.filter(t => t.result === 'WIN').length;
+    const losses = trades.filter(t => t.result === 'LOSS').length;
+    const totalPnL = trades.reduce((s, t) => s + (parseFloat(t.pnl_dollar) || 0), 0);
+    const winrate = Math.round((wins / trades.length) * 100);
+
+    el.innerHTML = `
+      <div class="section-label">Statistik</div>
+      <div class="stats-grid" style="margin-bottom:24px">
+        <div class="pnl-item"><div class="pnl-label">Trades</div><div class="pnl-value neutral">${trades.length}</div></div>
+        <div class="pnl-item"><div class="pnl-label">Winrate</div><div class="pnl-value ${winrate >= 50 ? 'profit' : 'loss'}">${winrate}%</div></div>
+        <div class="pnl-item"><div class="pnl-label">Wins / Losses</div><div class="pnl-value neutral">${wins} / ${losses}</div></div>
+        <div class="pnl-item"><div class="pnl-label">Total PnL</div><div class="pnl-value ${totalPnL >= 0 ? 'profit' : 'loss'}">${formatPnL(totalPnL)}</div></div>
+      </div>
+      <div class="section-label">Trades</div>` +
+      trades.map(t => `
+        <div class="trade-card ${(t.result || '').toLowerCase()}">
+          <div class="history-grid">
+            <div class="history-item">
+              <div class="pnl-label">Coin</div>
+              <div class="pnl-value neutral">${t.coin}</div>
+              <span class="signal-direction ${t.direction.toLowerCase()}" style="font-size:10px;margin-top:4px;display:inline-block">${t.direction}</span>
+            </div>
+            <div class="history-item"><div class="pnl-label">Entry</div><div class="pnl-value neutral">${t.entry_price ? '$' + parseFloat(t.entry_price).toLocaleString('de-DE') : '–'}</div></div>
+            <div class="history-item"><div class="pnl-label">Exit</div><div class="pnl-value neutral">${t.exit_price ? '$' + parseFloat(t.exit_price).toLocaleString('de-DE') : '–'}</div></div>
+            <div class="history-item"><div class="pnl-label">PnL</div><div class="pnl-value ${t.pnl_dollar >= 0 ? 'profit' : 'loss'}">${t.pnl_dollar != null ? formatPnL(parseFloat(t.pnl_dollar)) : '–'}</div></div>
+            <div class="history-item"><div class="pnl-label">Result</div><span class="result-badge result-${t.result || 'BREAKEVEN'}">${t.result || '–'}</span></div>
+          </div>
+          <div style="font-size:11px;color:#444;margin-top:8px">${formatTime(t.created_at)} → ${t.closed_at ? formatTime(t.closed_at) : '–'}</div>
+        </div>
+      `).join('');
+  }
+
+  // ── MODAL ────────────────────────────────────────
+
   async function openModal(id) {
     const res = await fetch('/api/signals/' + id);
     const s = await res.json();
-    const a = s.analysis || {};
-    const claude = a.claude || {};
-    const grok = a.grok || {};
+    const claude = (s.analysis || {}).claude || {};
+    const grok = (s.analysis || {}).grok || {};
 
     window._currentSignal = s;
     window._currentClaude = claude;
@@ -472,38 +534,32 @@
     if (!s || !claude) return;
 
     const res = await fetch('/api/trades', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        signal_id: s.id,
-        coin: s.coin,
-        direction: s.direction,
-        signal_price: parseFloat(s.price),
-        entry_price: null,
-        position_size: null,
-        tp1: parseFloat(claude.tp1),
-        tp2: parseFloat(claude.tp2),
-        sl: parseFloat(claude.sl)
+        signal_id: s.id, coin: s.coin, direction: s.direction,
+        signal_price: parseFloat(s.price), entry_price: null, position_size: null,
+        tp1: parseFloat(claude.tp1), tp2: parseFloat(claude.tp2), sl: parseFloat(claude.sl)
       })
     });
     const trade = await res.json();
     activeTrades[trade.id] = trade;
-    renderActiveTrades();
     document.getElementById('modal').classList.remove('active');
-    document.querySelector('.trades-section').scrollIntoView({ behavior: 'smooth' });
-  }
 
-  async function deleteSignal(e, id) {
-    e.stopPropagation();
-    if (!confirm('Signal löschen?')) return;
-    await fetch('/api/signals/' + id, { method: 'DELETE' });
-    loadSignals();
+    // Zu Aktive Trades Tab wechseln
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.tab-btn')[1].classList.add('active');
+    document.getElementById('tab-active').classList.add('active');
+    renderActiveTrades();
   }
 
   function closeModal(e) {
-    if (e.target === document.getElementById('modal')) {
-      document.getElementById('modal').classList.remove('active');
-    }
+    if (e.target.id === 'modal') document.getElementById('modal').classList.remove('active');
+  }
+
+  async function loadAll() {
+    await loadSignals();
+    document.getElementById('last-update').textContent = formatTime(new Date());
   }
 
   loadSignals();
