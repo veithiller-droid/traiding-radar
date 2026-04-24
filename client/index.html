@@ -279,7 +279,7 @@
     const list = document.getElementById('signals-list');
     let filtered = allSignals;
     if (activeFilter !== 'ALL' && activeFilter !== 'LONG' && activeFilter !== 'SHORT') {
-      filtered = allSignals.filter(s => s.coin === activeFilter);
+      filtered = allSignals.filter(s => s.coin.toUpperCase().startsWith(activeFilter));
     } else if (activeFilter === 'LONG' || activeFilter === 'SHORT') {
       filtered = allSignals.filter(s => s.direction === activeFilter);
     }
@@ -287,11 +287,12 @@
     list.innerHTML = filtered.map(s => {
       const dir = s.direction.toLowerCase();
       const label = s.direction === 'LONG_EXIT' ? '🟡 EXIT L' : s.direction === 'SHORT_EXIT' ? '🟡 EXIT S' : s.direction;
+      const potentialLong = s.direction === 'SHORT_EXIT' && s.ema200 && parseFloat(s.price) > parseFloat(s.ema200);
       return `<div class="signal-card ${dir}" onclick="openModal(${s.id})">
         <span class="signal-direction ${dir}">${label}</span>
         <span class="signal-coin">${s.coin}</span>
         <span class="signal-time">${formatTime(s.created_at)}</span>
-        <span class="signal-summary">${s.summary || '–'}</span>
+        <span class="signal-summary">${s.summary || '–'}${potentialLong ? ' ⚡ Potential LONG' : ''}</span>
         <span class="signal-price">$${parseFloat(s.price).toLocaleString('de-DE')}</span>
         <span class="delete-btn" onclick="deleteSignal(event, ${s.id})">✕</span>
       </div>`;
