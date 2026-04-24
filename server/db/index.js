@@ -27,6 +27,7 @@ async function initDB() {
 
     CREATE INDEX IF NOT EXISTS idx_signals_created_at ON signals(created_at DESC);
     CREATE INDEX IF NOT EXISTS idx_signals_coin ON signals(coin);
+
     CREATE TABLE IF NOT EXISTS trades (
       id SERIAL PRIMARY KEY,
       signal_id INTEGER REFERENCES signals(id),
@@ -38,10 +39,17 @@ async function initDB() {
       tp1 NUMERIC,
       tp2 NUMERIC,
       sl NUMERIC,
+      exit_price NUMERIC,
+      pnl_dollar NUMERIC,
+      pnl_percent NUMERIC,
+      result VARCHAR(10),
       status VARCHAR(10) DEFAULT 'active',
       created_at TIMESTAMPTZ DEFAULT NOW(),
       closed_at TIMESTAMPTZ
     );
+
+    CREATE INDEX IF NOT EXISTS idx_trades_status ON trades(status);
+    CREATE INDEX IF NOT EXISTS idx_trades_coin ON trades(coin);
   `);
   console.log('DB initialized');
 }

@@ -20,29 +20,28 @@
     .filter-btn:hover { border-color: #4ade80; color: #fff; }
     .filter-btn.active { background: #1a2e1a; border-color: #4ade80; color: #4ade80; }
 
-    /* Active Trades Section */
     .trades-section { padding: 16px 24px 0; max-width: 900px; }
     .trades-title { font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
 
-    .trade-card {
-      background: #13161e; border: 1px solid #1e2330; border-radius: 8px;
-      padding: 14px 18px; margin-bottom: 8px;
-    }
+    .trade-card { background: #13161e; border: 1px solid #1e2330; border-radius: 8px; padding: 14px 18px; margin-bottom: 8px; }
     .trade-card.long-active { border-left: 3px solid #4ade80; }
     .trade-card.short-active { border-left: 3px solid #f87171; }
 
-    .trade-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-    .trade-card-left { display: flex; align-items: center; gap: 10px; }
+    .trade-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+    .trade-card-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
     .trade-card-coin { font-size: 15px; font-weight: 700; color: #fff; }
     .trade-card-time { font-size: 11px; color: #555; }
 
-    .trade-card-inputs { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+    .trade-card-inputs { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; align-items: flex-end; }
     .trade-input-group { display: flex; flex-direction: column; gap: 3px; }
     .trade-input-label { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; }
     .trade-input { background: #0d0f14; border: 1px solid #2a3040; color: #e0e0e0; padding: 5px 8px; border-radius: 4px; font-size: 12px; font-family: inherit; width: 120px; }
     .trade-input:focus { outline: none; border-color: #4ade80; }
 
-    .trade-pnl-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px; }
+    .save-btn { background: #1e2330; border: 1px solid #2a3040; color: #888; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; font-family: inherit; }
+    .save-btn:hover { border-color: #4ade80; color: #4ade80; }
+
+    .trade-pnl-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px; }
     .trade-pnl-item { background: #0d0f14; border: 1px solid #1e2330; border-radius: 4px; padding: 8px 10px; }
     .trade-pnl-label { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
     .trade-pnl-value { font-size: 12px; font-weight: 700; }
@@ -50,8 +49,19 @@
     .trade-pnl-value.loss { color: #f87171; }
     .trade-pnl-value.neutral { color: #888; }
 
-    .trade-close-btn { background: #2e1a1a; border: 1px solid #f87171; color: #f87171; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; font-family: inherit; }
-    .trade-close-btn:hover { background: #f87171; color: #000; }
+    .exit-section { display: none; background: #0d0f14; border: 1px solid #2a3040; border-radius: 4px; padding: 12px; margin-bottom: 8px; }
+    .exit-section.visible { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
+    .exit-section .trade-input-label { color: #fbbf24; }
+
+    .exit-confirm-btn { background: #2e1a1a; border: 1px solid #f87171; color: #f87171; padding: 5px 14px; border-radius: 4px; cursor: pointer; font-size: 11px; font-family: inherit; font-weight: 700; }
+    .exit-confirm-btn:hover { background: #f87171; color: #000; }
+
+    .exit-cancel-btn { background: none; border: 1px solid #333; color: #555; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-family: inherit; }
+    .exit-cancel-btn:hover { color: #888; }
+
+    .trade-footer { display: flex; justify-content: flex-end; }
+    .trade-close-trigger { background: none; border: 1px solid #333; color: #555; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-family: inherit; }
+    .trade-close-trigger:hover { border-color: #f87171; color: #f87171; }
 
     .signals-container { padding: 24px; max-width: 900px; }
     .signal-card { background: #13161e; border: 1px solid #1e2330; border-left: 3px solid transparent; border-radius: 6px; padding: 14px 18px; margin-bottom: 8px; cursor: pointer; display: flex; align-items: center; gap: 16px; transition: all 0.15s; }
@@ -133,7 +143,6 @@
   <button class="filter-btn" onclick="setFilter('SHORT')">SHORT</button>
 </div>
 
-<!-- Aktive Trades -->
 <div class="trades-section">
   <div id="active-trades-container"></div>
 </div>
@@ -155,21 +164,18 @@
       </div>
       <button class="close-btn" onclick="document.getElementById('modal').classList.remove('active')">✕</button>
     </div>
-
     <div class="detail-grid">
       <div class="detail-item"><div class="detail-label">Preis</div><div class="detail-value" id="d-price">–</div></div>
       <div class="detail-item"><div class="detail-label">RSI</div><div class="detail-value" id="d-rsi">–</div></div>
       <div class="detail-item"><div class="detail-label">EMA 50</div><div class="detail-value" id="d-ema50">–</div></div>
       <div class="detail-item"><div class="detail-label">EMA 200</div><div class="detail-value" id="d-ema200">–</div></div>
     </div>
-
     <div class="section-title">News Sentiment</div>
     <div class="analysis-block" style="margin-bottom:12px">
       <div class="analysis-row"><span class="analysis-key">Sentiment</span><span class="analysis-val" id="d-sentiment">–</span></div>
       <div class="analysis-row"><span class="analysis-key">News</span><span class="analysis-val" id="d-news">–</span></div>
       <div class="analysis-row"><span class="analysis-key">Key Event</span><span class="analysis-val" id="d-event">–</span></div>
     </div>
-
     <div class="section-title">Technische Analyse</div>
     <div class="analysis-block">
       <div class="analysis-row"><span class="analysis-key">Stärke</span><span class="analysis-val" id="d-strength">–</span></div>
@@ -179,7 +185,6 @@
       <div class="analysis-row"><span class="analysis-key">Entry</span><span class="analysis-val" id="d-entry">–</span></div>
       <div class="analysis-row"><span class="analysis-key">Invalidierung</span><span class="analysis-val" id="d-invalid">–</span></div>
     </div>
-
     <div id="levels-block" style="display:none">
       <div class="section-title">Levels</div>
       <div class="detail-grid">
@@ -189,7 +194,6 @@
         <div class="detail-item"><div class="detail-label">Risk/Reward</div><div class="detail-value" id="d-rr">–</div></div>
       </div>
     </div>
-
     <button class="activate-btn" id="activate-btn" onclick="activateTrade()" style="display:none">▶ Trade aktivieren</button>
   </div>
 </div>
@@ -209,9 +213,11 @@
     return sign + val.toFixed(2).replace('.', ',') + ' $';
   }
 
-  function calcTradePnL(trade) {
-    const entry = parseFloat(document.getElementById('tp-entry-' + trade.id).value);
-    const position = parseFloat(document.getElementById('tp-pos-' + trade.id).value);
+  function calcTradePnL(id) {
+    const trade = activeTrades[id];
+    if (!trade) return;
+    const entry = parseFloat(document.getElementById('tp-entry-' + id).value);
+    const position = parseFloat(document.getElementById('tp-pos-' + id).value);
     if (!entry || !position || entry <= 0 || position <= 0) return;
 
     const coins = position / entry;
@@ -222,9 +228,9 @@
     const pnlTP2 = (parseFloat(trade.tp2) - entry) * coins * mult;
     const pnlSL  = (parseFloat(trade.sl)  - entry) * coins * mult;
 
-    const tp1El = document.getElementById('pnl-tp1-' + trade.id);
-    const tp2El = document.getElementById('pnl-tp2-' + trade.id);
-    const slEl  = document.getElementById('pnl-sl-' + trade.id);
+    const tp1El = document.getElementById('pnl-tp1-' + id);
+    const tp2El = document.getElementById('pnl-tp2-' + id);
+    const slEl  = document.getElementById('pnl-sl-' + id);
 
     tp1El.textContent = '$' + parseFloat(trade.tp1).toLocaleString('de-DE') + ' → ' + formatPnL(pnlTP1);
     tp1El.className = 'trade-pnl-value ' + (pnlTP1 >= 0 ? 'profit' : 'loss');
@@ -232,27 +238,48 @@
     tp2El.className = 'trade-pnl-value ' + (pnlTP2 >= 0 ? 'profit' : 'loss');
     slEl.textContent = '$' + parseFloat(trade.sl).toLocaleString('de-DE') + ' → ' + formatPnL(pnlSL);
     slEl.className = 'trade-pnl-value ' + (pnlSL >= 0 ? 'profit' : 'loss');
-
-    // In DB speichern
-    fetch('/api/trades', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        signal_id: trade.signal_id,
-        coin: trade.coin,
-        direction: trade.direction,
-        signal_price: trade.signal_price,
-        entry_price: entry,
-        position_size: position,
-        tp1: trade.tp1,
-        tp2: trade.tp2,
-        sl: trade.sl
-      })
-    }).catch(err => console.error('Trade save error:', err));
   }
 
-  async function closeTrade(id) {
-    await fetch('/api/trades/' + id + '/close', { method: 'PATCH' });
+  async function saveTradeInputs(id) {
+    const entry = parseFloat(document.getElementById('tp-entry-' + id).value);
+    const position = parseFloat(document.getElementById('tp-pos-' + id).value);
+    if (!entry || !position) return;
+    await fetch('/api/trades/' + id + '/update', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ entry_price: entry, position_size: position })
+    });
+    activeTrades[id].entry_price = entry;
+    activeTrades[id].position_size = position;
+  }
+
+  function showExitSection(id) {
+    document.getElementById('exit-section-' + id).className = 'exit-section visible';
+    document.getElementById('exit-trigger-' + id).style.display = 'none';
+  }
+
+  function hideExitSection(id) {
+    document.getElementById('exit-section-' + id).className = 'exit-section';
+    document.getElementById('exit-trigger-' + id).style.display = 'block';
+  }
+
+  async function confirmClose(id) {
+    const exitPrice = parseFloat(document.getElementById('exit-price-' + id).value);
+    const res = await fetch('/api/trades/' + id + '/close', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ exit_price: exitPrice || null })
+    });
+    const data = await res.json();
+
+    // PnL anzeigen bevor Trade verschwindet
+    if (data.pnl_dollar !== null) {
+      const pnl = data.pnl_dollar;
+      const color = pnl >= 0 ? '#4ade80' : '#f87171';
+      const result = data.result;
+      alert(`Trade geschlossen: ${result}\nPnL: ${pnl >= 0 ? '+' : ''}${pnl.toFixed(2)} $`);
+    }
+
     delete activeTrades[id];
     renderActiveTrades();
   }
@@ -260,11 +287,7 @@
   function renderActiveTrades() {
     const container = document.getElementById('active-trades-container');
     const trades = Object.values(activeTrades);
-
-    if (trades.length === 0) {
-      container.innerHTML = '';
-      return;
-    }
+    if (trades.length === 0) { container.innerHTML = ''; return; }
 
     container.innerHTML = '<div class="trades-title">Aktive Trades (' + trades.length + ')</div>' +
       trades.map(t => `
@@ -274,24 +297,24 @@
               <span class="signal-direction ${t.direction.toLowerCase()}">${t.direction}</span>
               <span class="trade-card-coin">${t.coin}</span>
               <span class="trade-card-time">${formatTime(t.created_at)}</span>
-              <span class="trade-card-time" style="color:#666">Signal: $${parseFloat(t.signal_price).toLocaleString('de-DE')}</span>
+              <span class="trade-card-time" style="color:#444">Signal: $${parseFloat(t.signal_price).toLocaleString('de-DE')}</span>
             </div>
-            <button class="trade-close-btn" onclick="closeTrade(${t.id})">✕ Schließen</button>
           </div>
 
           <div class="trade-card-inputs">
             <div class="trade-input-group">
               <div class="trade-input-label">Mein Entry ($)</div>
               <input type="number" class="trade-input" id="tp-entry-${t.id}"
-                value="${t.entry_price || ''}" placeholder="z.B. 9.27"
-                oninput="calcTradePnL(${JSON.stringify(t).replace(/"/g, '&quot;')})">
+                value="${t.entry_price || ''}" placeholder="z.B. 247.12"
+                oninput="calcTradePnL(${t.id})">
             </div>
             <div class="trade-input-group">
               <div class="trade-input-label">Position ($)</div>
               <input type="number" class="trade-input" id="tp-pos-${t.id}"
                 value="${t.position_size || ''}" placeholder="z.B. 100"
-                oninput="calcTradePnL(${JSON.stringify(t).replace(/"/g, '&quot;')})">
+                oninput="calcTradePnL(${t.id})">
             </div>
+            <button class="save-btn" onclick="saveTradeInputs(${t.id})">💾 Speichern</button>
           </div>
 
           <div class="trade-pnl-grid">
@@ -312,12 +335,24 @@
               <div class="trade-pnl-value neutral" id="pnl-sl-${t.id}">$${parseFloat(t.sl).toLocaleString('de-DE')}</div>
             </div>
           </div>
+
+          <div class="exit-section" id="exit-section-${t.id}">
+            <div class="trade-input-group">
+              <div class="trade-input-label" style="color:#fbbf24">Exit Preis ($)</div>
+              <input type="number" class="trade-input" id="exit-price-${t.id}" placeholder="z.B. 249.50">
+            </div>
+            <button class="exit-confirm-btn" onclick="confirmClose(${t.id})">✓ Trade schließen</button>
+            <button class="exit-cancel-btn" onclick="hideExitSection(${t.id})">Abbrechen</button>
+          </div>
+
+          <div class="trade-footer">
+            <button class="trade-close-trigger" id="exit-trigger-${t.id}" onclick="showExitSection(${t.id})">✕ Trade beenden</button>
+          </div>
         </div>
       `).join('');
 
-    // PnL berechnen wenn Werte vorhanden
     trades.forEach(t => {
-      if (t.entry_price && t.position_size) calcTradePnL(t);
+      if (t.entry_price && t.position_size) calcTradePnL(t.id);
     });
   }
 
@@ -328,9 +363,7 @@
       activeTrades = {};
       trades.forEach(t => activeTrades[t.id] = t);
       renderActiveTrades();
-    } catch (err) {
-      console.log('No active trades');
-    }
+    } catch (err) { console.log('No active trades'); }
   }
 
   async function loadSignals() {
@@ -340,7 +373,7 @@
       document.getElementById('last-update').textContent = formatTime(new Date());
       renderSignals();
     } catch (err) {
-      document.getElementById('signals-list').innerHTML = '<div class="empty">Verbindung zum Server fehlgeschlagen</div>';
+      document.getElementById('signals-list').innerHTML = '<div class="empty">Verbindung fehlgeschlagen</div>';
     }
   }
 
@@ -418,7 +451,6 @@
       document.getElementById('d-sl').textContent = '$' + parseFloat(claude.sl).toLocaleString('de-DE');
       document.getElementById('d-rr').textContent = claude.rr;
       document.getElementById('levels-block').style.display = 'block';
-
       if (s.direction === 'LONG' || s.direction === 'SHORT') {
         const btn = document.getElementById('activate-btn');
         btn.style.display = 'block';

@@ -36,14 +36,58 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Einzelnen Trade schließen
+// Entry/Position updaten
+router.patch('/:id/update', async (req, res) => {
+  try {
+    const { entry_price, position_size } = req.body;
+    await pool.query(
+      `UPDATE trades SET entry_price = $1, position_size = $2 WHERE id = $3`,
+      [entry_price, position_size, req.params.id]
+    );
+    res.json({ updated: true });
+  } catch (err) {
+    res.status(500).json({ error: 'DB error' });
+  }
+});
+
+// Trade schließen mit Exit-Preis und PnL
 router.patch('/:id/close', async (req, res) => {
   try {
+    const { exit_price } = req.body;
+
+    // Trade holen für PnL Berechnung
+    const tradeRes = await pool.query(`SELECT * FROM trades WHERE id = $1`, [req.params.id]);
+    const trade = tradeRes.rows[0];
+
+    let pnl_dollar = null;
+    let pnl_percent = null;
+    let result = null;
+
+    if (trade && trade.entry_price && trade.position_size && exit_price) {
+      const entry = parseFloat(trade.entry_price);
+      const position = parseFloat(trade.position_size);
+      const exit = parseFloat(exit_price);
+      const coins = position / entry;
+      const mult = trade.direction === 'LONG' ? 1 : -1;
+
+      pnl_dollar = (exit - entry) * coins * mult;
+      pnl_percent = ((exit - entry) / entry) * 100 * mult;
+      result = pnl_dollar > 0 ? 'WIN' : pnl_dollar < 0 ? 'LOSS' : 'BREAKEVEN';
+    }
+
     await pool.query(
-      `UPDATE trades SET status = 'closed', closed_at = NOW() WHERE id = $1`,
-      [req.params.id]
+      `UPDATE trades SET 
+        status = 'closed', 
+        closed_at = NOW(),
+        exit_price = $1,
+        pnl_dollar = $2,
+        pnl_percent = $3,
+        result = $4
+       WHERE id = $5`,
+      [exit_price || null, pnl_dollar, pnl_percent, result, req.params.id]
     );
-    res.json({ closed: true });
+
+    res.json({ closed: true, pnl_dollar, result });
   } catch (err) {
     res.status(500).json({ error: 'DB error' });
   }
