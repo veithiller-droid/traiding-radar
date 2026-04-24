@@ -9,12 +9,14 @@ async function getGrokSentiment(coin) {
         messages: [
           {
             role: 'user',
-            content: `Aktuelle News und Sentiment für ${coin} in den letzten 24 Stunden. 
-            Antworte NUR in diesem JSON Format ohne Markdown:
-            {"sentiment":"bullish|bearish|neutral","summary":"max 2 Sätze auf Deutsch","key_event":"wichtigstes Event oder null"}`
+            content: `Aktuelle News und Sentiment für ${coin} in den LETZTEN 2 STUNDEN. Nur Events die in den letzten 2 Stunden passiert sind - keine älteren Nachrichten.
+${['BTC', 'ETH'].includes(coin) ? 'Prüfe auch aktuelle Posts von @whale_alert und @lookonchain auf X.' : ''}
+Wenn keine relevanten Events in den letzten 2 Stunden: key_event = null.
+Antworte NUR in diesem JSON Format ohne Markdown:
+{"sentiment":"bullish|bearish|neutral","summary":"max 2 Sätze auf Deutsch","key_event":"konkretes Event der letzten 2h oder null"}`
           }
         ],
-        max_tokens: 200
+        max_tokens: 400
       },
       {
         headers: {
