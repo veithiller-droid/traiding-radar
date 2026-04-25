@@ -14,6 +14,18 @@ router.get('/active', async (req, res) => {
   }
 });
 
+// Trade History holen
+router.get('/history', async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM trades WHERE status = 'closed' ORDER BY closed_at DESC LIMIT 100`
+    );
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: 'DB error' });
+  }
+});
+
 // Trade speichern
 router.post('/', async (req, res) => {
   try {
@@ -55,7 +67,6 @@ router.patch('/:id/close', async (req, res) => {
   try {
     const { exit_price } = req.body;
 
-    // Trade holen für PnL Berechnung
     const tradeRes = await pool.query(`SELECT * FROM trades WHERE id = $1`, [req.params.id]);
     const trade = tradeRes.rows[0];
 
