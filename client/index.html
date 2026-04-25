@@ -440,16 +440,16 @@
       el.innerHTML = '<div class="empty">Noch keine abgeschlossenen Trades</div>';
       return;
     }
-    const wins = trades.filter(t => t.result === 'WIN').length;
-    const losses = trades.filter(t => t.result === 'LOSS').length;
-    const totalPnL = trades.reduce((s, t) => s + (parseFloat(t.pnl_dollar) || 0), 0);
-    const winrate = Math.round((wins / trades.length) * 100);
+   const validTrades = trades.filter(t => t.result !== null);
+    const wins = validTrades.filter(t => t.result === 'WIN').length;
+  const losses = validTrades.filter(t => t.result === 'LOSS').length;
+  const totalPnL = validTrades.reduce((s, t) => s + (parseFloat(t.pnl_dollar) || 0), 0);
+  const winrate = validTrades.length > 0 ? Math.round((wins / validTrades.length) * 100) : 0;   
 
     el.innerHTML = `
       <div class="section-label">Statistik</div>
       <div class="stats-grid" style="margin-bottom:24px">
-        <div class="pnl-item"><div class="pnl-label">Trades</div><div class="pnl-value neutral">${trades.length}</div></div>
-        <div class="pnl-item"><div class="pnl-label">Winrate</div><div class="pnl-value ${winrate >= 50 ? 'profit' : 'loss'}">${winrate}%</div></div>
+      <div class="pnl-item"><div class="pnl-label">Trades</div><div class="pnl-value neutral">${validTrades.length}</div></div>        <div class="pnl-item"><div class="pnl-label">Winrate</div><div class="pnl-value ${winrate >= 50 ? 'profit' : 'loss'}">${winrate}%</div></div>
         <div class="pnl-item"><div class="pnl-label">Wins / Losses</div><div class="pnl-value neutral">${wins} / ${losses}</div></div>
         <div class="pnl-item"><div class="pnl-label">Total PnL</div><div class="pnl-value ${totalPnL >= 0 ? 'profit' : 'loss'}">${formatPnL(totalPnL)}</div></div>
       </div>
