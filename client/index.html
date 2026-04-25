@@ -197,6 +197,7 @@
       </div>
       <button class="close-btn" onclick="document.getElementById('modal').classList.remove('active')">✕</button>
     </div>
+    <div id="modal-signal-type" style="margin-bottom:12px"></div>
     <div class="detail-grid">
       <div class="detail-item"><div class="detail-label">Preis</div><div class="detail-value" id="d-price">–</div></div>
       <div class="detail-item"><div class="detail-label">RSI</div><div class="detail-value" id="d-rsi">–</div></div>
@@ -288,9 +289,12 @@
       const dir = s.direction.toLowerCase();
       const label = s.direction === 'LONG_EXIT' ? '🟡 EXIT L' : s.direction === 'SHORT_EXIT' ? '🟡 EXIT S' : s.direction;
       const potentialLong = s.direction === 'SHORT_EXIT' && s.ema200 && parseFloat(s.price) > parseFloat(s.ema200);
+      const typeColor = s.signal_type && s.signal_type.endsWith('-R') ? '#4ade80' :
+                        s.signal_type && s.signal_type.endsWith('-H') ? '#2dd4bf' : '#888';
+      const typeBadge = s.signal_type ? `<span style="font-size:10px;color:${typeColor};margin-left:4px">${s.signal_type}</span>` : '';
       return `<div class="signal-card ${dir}" onclick="openModal(${s.id})">
         <span class="signal-direction ${dir}">${label}</span>
-        <span class="signal-coin">${s.coin}</span>
+        <span class="signal-coin">${s.coin}${typeBadge}</span>
         <span class="signal-time">${formatTime(s.created_at)}</span>
         <span class="signal-summary">${s.summary || '–'}${potentialLong ? ' ⚡ Potential LONG' : ''}</span>
         <span class="signal-price">$${parseFloat(s.price).toLocaleString('de-DE')}</span>
@@ -440,16 +444,16 @@
       el.innerHTML = '<div class="empty">Noch keine abgeschlossenen Trades</div>';
       return;
     }
-   const validTrades = trades.filter(t => t.result !== null);
-    const wins = validTrades.filter(t => t.result === 'WIN').length;
-  const losses = validTrades.filter(t => t.result === 'LOSS').length;
-  const totalPnL = validTrades.reduce((s, t) => s + (parseFloat(t.pnl_dollar) || 0), 0);
-  const winrate = validTrades.length > 0 ? Math.round((wins / validTrades.length) * 100) : 0;   
+    const wins = trades.filter(t => t.result === 'WIN').length;
+    const losses = trades.filter(t => t.result === 'LOSS').length;
+    const totalPnL = trades.reduce((s, t) => s + (parseFloat(t.pnl_dollar) || 0), 0);
+    const winrate = Math.round((wins / trades.length) * 100);
 
     el.innerHTML = `
       <div class="section-label">Statistik</div>
       <div class="stats-grid" style="margin-bottom:24px">
-      <div class="pnl-item"><div class="pnl-label">Trades</div><div class="pnl-value neutral">${validTrades.length}</div></div>        <div class="pnl-item"><div class="pnl-label">Winrate</div><div class="pnl-value ${winrate >= 50 ? 'profit' : 'loss'}">${winrate}%</div></div>
+        <div class="pnl-item"><div class="pnl-label">Trades</div><div class="pnl-value neutral">${trades.length}</div></div>
+        <div class="pnl-item"><div class="pnl-label">Winrate</div><div class="pnl-value ${winrate >= 50 ? 'profit' : 'loss'}">${winrate}%</div></div>
         <div class="pnl-item"><div class="pnl-label">Wins / Losses</div><div class="pnl-value neutral">${wins} / ${losses}</div></div>
         <div class="pnl-item"><div class="pnl-label">Total PnL</div><div class="pnl-value ${totalPnL >= 0 ? 'profit' : 'loss'}">${formatPnL(totalPnL)}</div></div>
       </div>
@@ -488,6 +492,18 @@
     const badge = document.getElementById('modal-direction-badge');
     badge.textContent = s.direction;
     badge.className = 'signal-direction ' + s.direction.toLowerCase();
+
+    // Signal Typ
+    const typeEl = document.getElementById('modal-signal-type');
+    if (s.signal_type) {
+      const typeDesc = s.signal_type.endsWith('-R') ? 'Reversal' :
+                       s.signal_type.endsWith('-H') ? 'Hidden Div' : 'Momentum';
+      const typeColor = s.signal_type.endsWith('-R') ? '#4ade80' :
+                        s.signal_type.endsWith('-H') ? '#2dd4bf' : '#888';
+      typeEl.innerHTML = `<span style="color:${typeColor};font-size:12px">${s.signal_type} – ${typeDesc}</span>`;
+    } else {
+      typeEl.innerHTML = '';
+    }
 
     document.getElementById('d-price').textContent = '$' + parseFloat(s.price).toLocaleString('de-DE');
     document.getElementById('d-rsi').textContent = s.rsi || '–';

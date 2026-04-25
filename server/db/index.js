@@ -11,6 +11,7 @@ async function initDB() {
       id SERIAL PRIMARY KEY,
       coin VARCHAR(10) NOT NULL,
       direction VARCHAR(10) NOT NULL,
+      signal_type VARCHAR(10),
       price NUMERIC,
       rsi NUMERIC,
       ema50 NUMERIC,
@@ -27,6 +28,8 @@ async function initDB() {
 
     CREATE INDEX IF NOT EXISTS idx_signals_created_at ON signals(created_at DESC);
     CREATE INDEX IF NOT EXISTS idx_signals_coin ON signals(coin);
+
+    ALTER TABLE signals ADD COLUMN IF NOT EXISTS signal_type VARCHAR(10);
 
     CREATE TABLE IF NOT EXISTS trades (
       id SERIAL PRIMARY KEY,

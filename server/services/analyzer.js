@@ -5,22 +5,25 @@ const { pool } = require('../db');
 async function analyzeAndStore(payload) {
   console.log(`Analyzing ${payload.coin} ${payload.direction}...`);
 
-  // Parallel: Grok + Claude
   const grokData = await getGrokSentiment(payload.coin);
   const claudeData = await getClaudeAnalysis(payload, grokData);
 
-  // Summary für Signal-Card
-  const summary = `${payload.coin} ${payload.direction} – ${claudeData.technical} Sentiment: ${grokData.sentiment}.`;
+  const signalType = payload.signal_type || null;
+  const typeLabel = signalType === 'LONG-R' || signalType === 'SHORT-R' ? 'Reversal' :
+                    signalType === 'LONG-H' || signalType === 'SHORT-H' ? 'Hidden Div' :
+                    signalType === 'LONG-M' || signalType === 'SHORT-M' ? 'Momentum' : '';
 
-  // In DB speichern
+  const summary = `${payload.coin} ${payload.direction}${typeLabel ? ' [' + typeLabel + ']' : ''} – ${claudeData.technical} Sentiment: ${grokData.sentiment}.`;
+
   const result = await pool.query(
     `INSERT INTO signals 
-      (coin, direction, price, rsi, ema50, ema200, timeframe, bull_div, bear_div, summary, analysis)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+      (coin, direction, signal_type, price, rsi, ema50, ema200, timeframe, bull_div, bear_div, summary, analysis)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
      RETURNING *`,
     [
       payload.coin,
       payload.direction,
+      signalType,
       payload.price,
       payload.rsi,
       payload.ema50,
@@ -33,7 +36,7 @@ async function analyzeAndStore(payload) {
     ]
   );
 
-  console.log(`Signal saved: ID ${result.rows[0].id}`);
+  console.log(`Signal saved: ID ${result.rows[0].id} Type: ${signalType}`);
   return result.rows[0];
 }
 

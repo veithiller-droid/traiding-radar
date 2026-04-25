@@ -11,18 +11,26 @@ async function getClaudeAnalysis(payload, grokData) {
     const sl  = isLong ? price - atr : price + atr;
     const rr  = atr > 0 ? (Math.abs(tp2 - price) / Math.abs(sl - price)).toFixed(1) : 'n/a';
 
+    const signalType = payload.signal_type || 'LONG-M';
+    const signalTypeDesc = signalType.endsWith('-R') ? 'Reversal (RSI Divergenz + Extremzone)' :
+                           signalType.endsWith('-H') ? 'Hidden Divergenz (Trendfortsetzung)' :
+                           'Momentum (MACD Cross)';
+
     const prompt = `Du bist ein erfahrener Crypto-Futures-Trader. Analysiere dieses Signal kurz und präzise.
 
 Signal-Daten:
 - Coin: ${payload.coin}
 - Richtung: ${payload.direction}
+- Signal Typ: ${signalType} (${signalTypeDesc})
 - Preis: ${price}
 - RSI: ${payload.rsi}
 - EMA50: ${payload.ema50}
 - EMA200: ${payload.ema200}
 - ATR(14): ${atr}
 - Bull Divergenz: ${payload.bull_div || false}
+- Hidden Bull: ${payload.hidden_bull || false}
 - Bear Divergenz: ${payload.bear_div || false}
+- Hidden Bear: ${payload.hidden_bear || false}
 
 Berechnete Levels (ATR-basiert):
 - Entry: ${price}
@@ -35,6 +43,10 @@ News/Sentiment (Grok):
 - Sentiment: ${grokData.sentiment}
 - Summary: ${grokData.summary}
 - Key Event: ${grokData.key_event || 'keins'}
+
+Beachte: ${signalType.endsWith('-R') ? 'Reversal-Signal – Markt war überdehnt, Umkehr wahrscheinlich.' : 
+          signalType.endsWith('-H') ? 'Hidden Divergenz – Trend läuft, Pullback bestätigt Fortsetzung.' :
+          'Momentum-Signal – schwächster Typ, nur in klaren Trends handeln.'}
 
 Antworte NUR in diesem JSON Format ohne Markdown:
 {
@@ -78,10 +90,7 @@ Antworte NUR in diesem JSON Format ohne Markdown:
       risk: '-',
       entry_note: '-',
       invalidation: '-',
-      tp1: '-',
-      tp2: '-',
-      sl: '-',
-      rr: '-'
+      tp1: '-', tp2: '-', sl: '-', rr: '-'
     };
   }
 }
